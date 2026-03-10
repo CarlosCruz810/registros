@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción Oficial - Instituto Livier</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; color: #333; padding: 20px; }
+        .container { max-width: 800px; background: #fff; margin: auto; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid #1a5c58; }
+        h2 { text-align: center; color: #1a5c58; margin-bottom: 25px; text-transform: uppercase; }
+        h3 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; color: #2c3e50; font-size: 1.1em; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; }
+        select, input, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        button { width: 100%; background-color: #25d366; color: white; padding: 18px; border: none; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 30px; transition: 0.3s; }
+        button:hover { background-color: #128c7e; box-shadow: 0 5px 15px rgba(37,211,102,0.4); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Solicitud de Inscripción</h2>
+
+    <form id="enrollmentForm">
+        <h3>1. SELECCIÓN DE CURSO Y HORARIO</h3>
+        
+        <label for="curso">Curso de Interés:</label>
+        <select id="curso" onchange="actualizarHorarios()" required>
+            <option value="" disabled selected>Selecciona tu programa...</option>
+            <optgroup label="Bachillerato y Educación">
+                <option value="Bachillerato Garantizado">Bachillerato Garantizado</option>
+                <option value="Bachillerato Livier">Bachillerato Livier</option>
+                <option value="Primaria y Secundaria">Primaria y Secundaria</option>
+                <option value="Asistente Educativo">Asistente Educativo</option>
+            </optgroup>
+            <optgroup label="Belleza Profesional (Beauty & Art)">
+                <option value="Colorimetría">Colorimetría</option>
+                <option value="Tratamientos Capilares y Permanentes">Tratamientos Capilares y Permanentes</option>
+                <option value="Maquillaje Profesional y Alto Peinado">Maquillaje Profesional y Alto Peinado</option>
+                <option value="Cortes y Barbería">Cortes y Barbería</option>
+                <option value="Uñas Artísticas">Uñas Artísticas</option>
+                <option value="Lashista">Lashista</option>
+                <option value="Terapeuta Spa">Terapeuta Spa</option>
+            </optgroup>
+            <optgroup label="Tecnología e Idiomas">
+                <option value="Inglés Kids y Teens">Inglés Kids y Teens</option>
+                <option value="Computación 6 meses">Computación (6 meses)</option>
+            </optgroup>
+        </select>
+
+        <label for="horario">Horarios y Planteles Disponibles:</label>
+        <select id="horario" required>
+            <option value="" disabled selected>Primero selecciona un curso...</option>
+        </select>
+
+        <h3>2. DATOS DEL ALUMNO</h3>
+        <label>Nombre Completo:</label>
+        <input type="text" id="nombre_alumno" required>
+
+        <div class="grid-2">
+            <div><label>Nacionalidad:</label><input type="text" id="nacionalidad" required></div>
+            <div><label>Fecha de Nacimiento:</label><input type="date" id="fecha_nacimiento" required></div>
+        </div>
+
+        <div class="grid-2">
+            <div><label>Edad:</label><input type="number" id="edad" required></div>
+            <div><label>Teléfono Celular:</label><input type="tel" id="telefono" required></div>
+        </div>
+
+        <label>Domicilio Completo:</label>
+        <textarea id="domicilio" rows="2" required></textarea>
+
+        <label>Último Grado de Estudios:</label>
+        <input type="text" id="estudios" required>
+
+        <label>Correo Electrónico:</label>
+        <input type="email" id="correo" required>
+
+        <h3>3. TUTOR / EMERGENCIA</h3>
+        <label>Nombre del Tutor:</label>
+        <input type="text" id="nombre_tutor" required>
+        
+        <div class="grid-2">
+            <div><label>Teléfono Tutor:</label><input type="tel" id="tel_tutor" required></div>
+            <div><label>Parentesco:</label><input type="text" id="parentesco" required></div>
+        </div>
+
+        <label>Ocupación del Tutor:</label>
+        <input type="text" id="ocupacion" required>
+
+        <button type="button" onclick="sendToWhatsApp()">ENVIAR INSCRIPCIÓN POR WHATSAPP</button>
+    </form>
+</div>
+
+<script>
+const horariosBeauty = [
+    "Lunes (8:00 am - 2:00 pm) - 3 Cupos",
+    "Martes (8:00 am - 2:00 pm) - 3 Cupos",
+    "Miércoles (8:00 am - 2:00 pm) - 5 Cupos",
+    "Jueves (2:00 pm - 8:00 pm) - 4 Cupos",
+    "Viernes (2:00 pm - 8:00 pm) - 4 Cupos"
+];
+
+const opcionesHorario = {
+    "Bachillerato Garantizado": [
+        "Sáb. 21 Marzo (Tulum) - 8:00 am a 1:00 pm",
+        "Sáb. 21 Marzo (Kabah) - 4:00 pm a 9:00 pm",
+        "Dom. 22 Marzo (Lakin) - 8:00 am a 1:00 pm"
+    ],
+    "Bachillerato Livier": [
+        "Lun. 2 Marzo (Kabah) - 7:30 am a 10:00 am",
+        "Lun. 20 Abril [Propedéutico] (Kabah) - 7:30 am a 10:00 am",
+        "Lun. 20 Abril [Propedéutico] (Lakin) - 3:00 pm a 5:30 pm"
+    ],
+    "Primaria y Secundaria": [
+        "Mar. y Mié. 17 Marzo (Kabah/Lakin) - 6:00 pm a 8:00 pm",
+        "Dom. 22 Marzo (Kabah) - 9:00 am a 1:00 pm"
+    ],
+    "Asistente Educativo": [
+        "Lun. y Jue. 30 Marzo (Kabah) - 5:30 pm a 8:30 pm",
+        "Sáb. 11 Abril (Kabah) - 7:00 am a 1:00 pm"
+    ],
+    "Inglés Kids y Teens": ["Sáb. 14 Marzo - 1:00 pm a 4:00 pm"],
+    "Computación 6 meses": ["Sáb. 14 Marzo - 8:00 am a 12:00 pm"],
+    "Colorimetría": horariosBeauty,
+    "Tratamientos Capilares y Permanentes": horariosBeauty,
+    "Maquillaje Profesional y Alto Peinado": horariosBeauty,
+    "Cortes y Barbería": horariosBeauty,
+    "Uñas Artísticas": horariosBeauty,
+    "Lashista": horariosBeauty,
+    "Terapeuta Spa": horariosBeauty
+};
+
+function actualizarHorarios() {
+    const cursoSel = document.getElementById("curso").value;
+    const comboHorario = document.getElementById("horario");
+    comboHorario.innerHTML = "";
+    if (opcionesHorario[cursoSel]) {
+        opcionesHorario[cursoSel].forEach(h => {
+            let opt = document.createElement("option");
+            opt.value = h; opt.text = h;
+            comboHorario.appendChild(opt);
+        });
+    }
+}
+
+function sendToWhatsApp() {
+    // --- COLOCA TU NÚMERO AQUÍ ---
+    const miTelefono = "529981234567"; 
+
+    // Captura de datos
+    const curso = document.getElementById('curso').value;
+    const horario = document.getElementById('horario').value;
+    const nombre = document.getElementById('nombre_alumno').value;
+    const nacionalidad = document.getElementById('nacionalidad').value;
+    const fechaNac = document.getElementById('fecha_nacimiento').value;
+    const edad = document.getElementById('edad').value;
+    const telAlumno = document.getElementById('telefono').value;
+    const domicilio = document.getElementById('domicilio').value;
+    const estudios = document.getElementById('estudios').value;
+    const correo = document.getElementById('correo').value;
+    const tutor = document.getElementById('nombre_tutor').value;
+    const telTutor = document.getElementById('tel_tutor').value;
+    const parentesco = document.getElementById('parentesco').value;
+    const ocupacion = document.getElementById('ocupacion').value;
+
+    // Construcción del mensaje con TODOS los apartados
+    const mensaje = `*NUEVA INSCRIPCIÓN INSTITUTO LIVIER*%0A%0A` +
+        `*1. PROGRAMA*%0A` +
+        `*Curso:* ${curso}%0A` +
+        `*Horario:* ${horario}%0A%0A` +
+        `*2. DATOS DEL ALUMNO*%0A` +
+        `*Nombre:* ${nombre}%0A` +
+        `*Nacionalidad:* ${nacionalidad}%0A` +
+        `*Fecha Nac:* ${fechaNac}%0A` +
+        `*Edad:* ${edad}%0A` +
+        `*Teléfono:* ${telAlumno}%0A` +
+        `*Correo:* ${correo}%0A` +
+        `*Domicilio:* ${domicilio}%0A` +
+        `*Estudios:* ${estudios}%0A%0A` +
+        `*3. TUTOR / EMERGENCIA*%0A` +
+        `*Nombre:* ${tutor}%0A` +
+        `*Teléfono:* ${telTutor}%0A` +
+        `*Parentesco:* ${parentesco}%0A` +
+        `*Ocupación:* ${ocupacion}`;
+
+    window.open(`https://wa.me/${miTelefono}?text=${mensaje}`, '_blank');
+}
+</script>
+
+</body>
+</html>
