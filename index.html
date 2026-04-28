@@ -24,7 +24,7 @@ h2 { text-align:center; }
 .step { display:none; }
 .step.active { display:block; }
 
-input, select {
+input, select, textarea {
     width:100%;
     padding:14px;
     margin-top:10px;
@@ -73,21 +73,15 @@ button {
 
 <select id="curso" onchange="actualizarHorarios()">
 <option disabled selected>Selecciona curso</option>
-
 <option>Bachillerato Garantizado</option>
 <option>Bachillerato Livier</option>
-
 <option>Primaria</option>
 <option>Secundaria</option>
-
 <option>Asistente Educativo</option>
-
 <option>Inglés Kids y Teens</option>
 <option>Lectoescritura Kids y Teens</option>
-
 <option>Computación 6 meses</option>
 <option>Computación + Inglés</option>
-
 <option>Colorimetría</option>
 <option>Tratamientos Capilares</option>
 <option>Maquillaje Profesional</option>
@@ -108,9 +102,12 @@ button {
 <div class="step">
 <input id="nombre" placeholder="Nombre(s)">
 <input id="apellidos" placeholder="Apellidos">
-<input id="fecha" placeholder="DD/MM/AA">
+<input id="nacionalidad" placeholder="Nacionalidad">
+<input id="fecha" placeholder="DD/MM/AAAA">
+<input id="edad" type="number" placeholder="Edad">
 <input id="telefono" placeholder="Teléfono">
 <input id="correo" placeholder="Correo">
+<textarea id="domicilio" placeholder="Domicilio"></textarea>
 
 <button onclick="prev()">Atrás</button>
 <button onclick="next()">Continuar</button>
@@ -121,6 +118,7 @@ button {
 <input id="tutor" placeholder="Nombre tutor">
 <input id="tel_tutor" placeholder="Tel tutor">
 <input id="parentesco" placeholder="Parentesco">
+<input id="ocupacion" placeholder="Ocupación">
 
 <button onclick="prev()">Atrás</button>
 <button onclick="guardar()">Guardar y Enviar</button>
@@ -130,7 +128,7 @@ button {
 
 <script>
 
-// HORARIOS BEAUTY
+// HORARIOS
 const horariosBeauty = [
 "📍 Lakin - Lunes 8am-2pm",
 "📍 Lakin - Martes 8am-2pm",
@@ -141,57 +139,42 @@ const horariosBeauty = [
 "📍 Lakin - Sábado 2pm-8pm"
 ];
 
-// HORARIOS
 const opciones = {
-
 "Primaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
-"📍 Lakin - Mar/Mié 6pm-8pm",
-"📍 Kabah - Dom 9am-1pm",
-"📍 Lakin - Dom 9am-1pm"
+"📍 Lakin - Mar/Mié 6pm-8pm"
 ],
-
 "Secundaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
-"📍 Lakin - Mar/Mié 6pm-8pm",
-"📍 Kabah - Dom 9am-1pm",
-"📍 Lakin - Dom 9am-1pm"
+"📍 Lakin - Mar/Mié 6pm-8pm"
 ],
-
 "Bachillerato Garantizado":[
 "📍 Tulum - Sáb 4pm-9pm",
 "📍 Lakin - Sáb 4pm-9pm",
 "💻 Online - Sáb 4pm-9pm",
 "📍 Kabah - Dom 8am-1pm"
 ],
-
 "Bachillerato Livier":[
 "📍 Kabah - Lun 7:30am-10am",
 "📍 Lakin - Lun 3pm-5:30pm"
 ],
-
 "Asistente Educativo":[
 "📍 Kabah - Lun/Jue 5:30pm-8:30pm",
 "📍 Kabah - Sáb 7am-1pm"
 ],
-
 "Inglés Kids y Teens":[
 "📍 Kabah - Sáb 1pm-4pm",
 "📍 Lakin - Sáb 1pm-4pm"
 ],
-
 "Lectoescritura Kids y Teens":[
 "📍 Tulum - Sáb 12pm-4pm"
 ],
-
 "Computación 6 meses":[
 "📍 Lakin - Sáb 8am-12pm"
 ],
-
 "Computación + Inglés":[
 "📍 Lakin - Sáb 4pm-8pm"
 ],
-
 "Colorimetría": horariosBeauty,
 "Tratamientos Capilares": horariosBeauty,
 "Maquillaje Profesional": horariosBeauty,
@@ -228,45 +211,74 @@ document.getElementById("bar").style.width=((step+1)*33)+"%";
 function next(){ if(step<2) step++; show(); }
 function prev(){ if(step>0) step--; show(); }
 
-// fecha formato
+// fecha formato 4 dígitos
 document.getElementById('fecha').addEventListener('input', e=>{
-let v=e.target.value.replace(/\D/g,'').slice(0,6);
-if(v.length>=5) e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,2})/,'$1/$2/$3');
+let v=e.target.value.replace(/\D/g,'').slice(0,8);
+if(v.length>=5) e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,4})/,'$1/$2/$3');
 else if(v.length>=3) e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
 });
 
 // guardar
 async function guardar(){
 
+let curso = document.getElementById("curso").value;
+let horario = document.getElementById("horario").value;
+
+// extraer plantel automáticamente
+let plantel = horario.includes("Kabah") ? "Kabah" :
+              horario.includes("Lakin") ? "Lakin" :
+              horario.includes("Tulum") ? "Tulum" :
+              horario.includes("Online") ? "Online" : "N/A";
+
 let data = {
     nombre: document.getElementById("nombre").value + " " + document.getElementById("apellidos").value,
+    nacionalidad: document.getElementById("nacionalidad").value,
+    fecha: document.getElementById("fecha").value,
+    edad: document.getElementById("edad").value,
     telefono: document.getElementById("telefono").value,
     correo: document.getElementById("correo").value,
-    curso: document.getElementById("curso").value,
-    horario: document.getElementById("horario").value
+    domicilio: document.getElementById("domicilio").value,
+    curso,
+    horario,
+    plantel,
+    tutor: document.getElementById("tutor").value,
+    tel_tutor: document.getElementById("tel_tutor").value,
+    parentesco: document.getElementById("parentesco").value,
+    ocupacion: document.getElementById("ocupacion").value
 };
-
-if(!data.nombre || !data.curso || !data.horario){
-    alert("Completa los datos");
-    return;
-}
 
 try {
 
-    await fetch("https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec", {
-        method: "POST",
-        body: JSON.stringify(data),
-        mode: "no-cors"
-    });
+await fetch("https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+    mode: "no-cors"
+});
 
-    let msg = `Nueva inscripción%0A${data.nombre}%0ACurso: ${data.curso}%0AHorario: ${data.horario}`;
-    window.open(`https://wa.me/529987593954?text=${msg}`);
+let msg = `*INSCRIPCIÓN NUEVA*%0A%0A
+*CURSO:* ${curso}%0A
+*HORARIO:* ${horario}%0A
+*PLANTEL:* ${plantel}%0A%0A
 
-    alert("Inscripción enviada ✅");
+*NOMBRE:* ${data.nombre}%0A
+*NACIONALIDAD:* ${data.nacionalidad}%0A
+*FECHA NAC:* ${data.fecha}%0A
+*EDAD:* ${data.edad}%0A
+*TEL:* ${data.telefono}%0A
+*CORREO:* ${data.correo}%0A
+*DOMICILIO:* ${data.domicilio}%0A%0A
 
-} catch(error){
-    alert("Error ❌");
-    console.error(error);
+*TUTOR:* ${data.tutor}%0A
+*TEL TUTOR:* ${data.tel_tutor}%0A
+*PARENTESCO:* ${data.parentesco}%0A
+*OCUPACIÓN:* ${data.ocupacion}`;
+
+window.open(`https://wa.me/529987593954?text=${msg}`);
+
+alert("Inscripción enviada ✅");
+
+} catch(e){
+alert("Error ❌");
 }
 }
 </script>
