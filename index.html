@@ -11,6 +11,7 @@ body {
     margin:0;
     background: linear-gradient(135deg,#1a5c58,#25d366);
 }
+
 .container {
     max-width:500px;
     margin:auto;
@@ -19,16 +20,44 @@ body {
     padding:20px;
     margin-top:20px;
 }
-input, select, button {
+
+h2 { text-align:center; }
+
+.step { display:none; }
+.step.active { display:block; }
+
+input, select {
     width:100%;
-    padding:12px;
+    padding:14px;
     margin-top:10px;
     border-radius:10px;
+    border:1px solid #ddd;
 }
+
 button {
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    border:none;
+    border-radius:12px;
     background:#25d366;
     color:#fff;
-    border:none;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.progress {
+    height:6px;
+    background:#eee;
+    margin-bottom:15px;
+    border-radius:10px;
+}
+
+.bar {
+    height:100%;
+    width:33%;
+    background:#25d366;
+    border-radius:10px;
 }
 </style>
 </head>
@@ -36,19 +65,31 @@ button {
 <body>
 
 <div class="container">
+
+<div class="progress"><div class="bar" id="bar"></div></div>
+
 <h2>Inscripción</h2>
 
-<select id="curso" onchange="cargarHorarios()">
+<!-- PASO 1 -->
+<div class="step active">
+
+<select id="curso" onchange="actualizarHorarios()">
 <option disabled selected>Selecciona curso</option>
+
 <option>Bachillerato Garantizado</option>
 <option>Bachillerato Livier</option>
+
 <option>Primaria</option>
 <option>Secundaria</option>
+
 <option>Asistente Educativo</option>
+
 <option>Inglés Kids y Teens</option>
 <option>Lectoescritura Kids y Teens</option>
+
 <option>Computación 6 meses</option>
 <option>Computación + Inglés</option>
+
 <option>Colorimetría</option>
 <option>Tratamientos Capilares</option>
 <option>Maquillaje Profesional</option>
@@ -62,76 +103,191 @@ button {
 <option disabled selected>Selecciona horario</option>
 </select>
 
+<button onclick="next()">Continuar</button>
+</div>
+
+<!-- PASO 2 -->
+<div class="step">
 <input id="nombre" placeholder="Nombre completo">
 <input id="nacionalidad" placeholder="Nacionalidad">
 <input id="fecha" placeholder="DD/MM/AAAA">
-<input id="edad" placeholder="Edad">
+<input id="edad" type="number" placeholder="Edad">
 <input id="telefono" placeholder="Teléfono">
 <input id="correo" placeholder="Correo">
 <input id="domicilio" placeholder="Domicilio">
-<input id="estudios" placeholder="Estudios">
+<input id="estudios" placeholder="Último grado de estudios">
 
-<input id="tutor" placeholder="Tutor">
+<button onclick="prev()">Atrás</button>
+<button onclick="next()">Continuar</button>
+</div>
+
+<!-- PASO 3 -->
+<div class="step">
+<input id="tutor" placeholder="Nombre tutor">
 <input id="tel_tutor" placeholder="Tel tutor">
 <input id="parentesco" placeholder="Parentesco">
 <input id="ocupacion" placeholder="Ocupación">
 
-<button onclick="enviar()">Enviar inscripción</button>
+<button onclick="prev()">Atrás</button>
+<button onclick="guardar()">Enviar inscripción</button>
+</div>
 
 </div>
 
 <script>
 
+// FORMATO FECHA
+document.getElementById('fecha').addEventListener('input', e=>{
+let v=e.target.value.replace(/\D/g,'').slice(0,8);
+if(v.length>=5)
+e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,4})/,'$1/$2/$3');
+else if(v.length>=3)
+e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
+});
+
+// HORARIOS
 const horarios = {
+
 "Primaria":[
-"Kabah Mar/Mié 6-8pm",
-"Kabah Domingo 9-1pm",
-"Lakin Mar/Mié 6-8pm"
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Kabah - Dom 9am-1pm",
+"📍 Lakin - Mar/Mié 6pm-8pm"
 ],
+
 "Secundaria":[
-"Kabah Mar/Mié 6-8pm",
-"Kabah Domingo 9-1pm",
-"Lakin Mar/Mié 6-8pm"
-]
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Kabah - Dom 9am-1pm",
+"📍 Lakin - Mar/Mié 6pm-8pm"
+],
+
+"Bachillerato Garantizado":[
+"📍 Tulum - Sáb 4pm-9pm",
+"📍 Lakin - Sáb 4pm-9pm",
+"📍 Kabah - Dom 8am-1pm",
+"💻 Online - Sáb 4pm-9pm"
+],
+
+"Bachillerato Livier":[
+"📍 Kabah - Lun 7:30am-10am",
+"📍 Lakin - Lun 3pm-5:30pm"
+],
+
+"Asistente Educativo":[
+"📍 Kabah - Lun/Jue 5:30pm-8:30pm",
+"📍 Kabah - Sáb 7am-1pm"
+],
+
+"Inglés Kids y Teens":[
+"📍 Kabah - Sáb 1pm-4pm",
+"📍 Lakin - Sáb 1pm-4pm"
+],
+
+"Lectoescritura Kids y Teens":[
+"📍 Tulum - Sáb 12pm-4pm"
+],
+
+"Computación 6 meses":[
+"📍 Lakin - Sáb 8am-12pm"
+],
+
+"Computación + Inglés":[
+"📍 Lakin - Sáb 4pm-8pm"
+],
+
+// BEAUTY
+"Colorimetría":["📍 Lakin - Lun a Sáb"],
+"Tratamientos Capilares":["📍 Lakin - Lun a Sáb"],
+"Maquillaje Profesional":["📍 Lakin - Lun a Sáb"],
+"Cortes y Barbería":["📍 Lakin - Lun a Sáb"],
+"Uñas Artísticas":["📍 Lakin - Lun a Sáb"],
+"Lashista":["📍 Lakin - Lun a Sáb"],
+"Terapeuta Spa":["📍 Lakin - Lun a Sáb"]
 };
 
-function cargarHorarios(){
-let curso=document.getElementById("curso").value;
-let select=document.getElementById("horario");
-select.innerHTML="<option>Selecciona horario</option>";
+// DURACIÓN
+const duraciones = {
+"Bachillerato Garantizado":"22 semanas",
+"Bachillerato Livier":"2 años",
+"Primaria":"6 meses",
+"Secundaria":"6 meses",
+"Asistente Educativo":"18 meses",
+"Terapeuta Spa":"18 meses",
+"Inglés Kids y Teens":"7 meses",
+"Lectoescritura Kids y Teens":"7 meses",
+"Computación + Inglés":"12 meses",
+"Computación 6 meses":"12 meses",
+"Cortes y Barbería":"6 meses",
+"Lashista":"4 meses",
+"Maquillaje Profesional":"4 meses",
+"Colorimetría":"4 meses",
+"Tratamientos Capilares":"4 meses",
+"Uñas Artísticas":"4 meses"
+};
 
-if(horarios[curso]){
-horarios[curso].forEach(h=>{
-let op=document.createElement("option");
-op.textContent=h;
-select.appendChild(op);
+// ACTUALIZAR HORARIOS
+function actualizarHorarios(){
+let c=document.getElementById("curso").value;
+let h=document.getElementById("horario");
+
+h.innerHTML='<option disabled selected>Selecciona horario</option>';
+
+horarios[c]?.forEach(x=>{
+let o=document.createElement("option");
+o.value=x;
+o.textContent=x;
+h.appendChild(o);
 });
-}else{
-let op=document.createElement("option");
-op.textContent="Horario disponible según plantel";
-select.appendChild(op);
-}
 }
 
-function enviar(){
+// STEPS
+let step=0;
+const steps=document.querySelectorAll(".step");
+
+function show(){
+steps.forEach(s=>s.classList.remove("active"));
+steps[step].classList.add("active");
+document.getElementById("bar").style.width=((step+1)*33)+"%";
+}
+
+function next(){ if(step<2) step++; show(); }
+function prev(){ if(step>0) step--; show(); }
+
+// ENVIAR
+function guardar(){
+
+let curso=cursoEl.value;
+let horario=horarioEl.value;
 
 let msg=`*1. PROGRAMA*
-Curso: ${curso.value}
-Horario: ${horario.value}
-Inscripción: $800
+*Curso:* ${curso}
+*Horario:* ${horario}
+*Duración:* ${duraciones[curso]}
+*Inscripción:* $800
 
-*2. DATOS*
-Nombre: ${nombre.value}
-Teléfono: ${telefono.value}
-Correo: ${correo.value}
+*2. DATOS DEL ALUMNO*
+*Nombre:* ${nombre.value}
+*Nacionalidad:* ${nacionalidad.value}
+*Fecha Nac:* ${fecha.value}
+*Edad:* ${edad.value}
+*Teléfono:* ${telefono.value}
+*Correo:* ${correo.value}
+*Domicilio:* ${domicilio.value}
+*Estudios:* ${estudios.value}
 
-*3. TUTOR*
-Nombre: ${tutor.value}
-Tel: ${tel_tutor.value}`;
+*3. TUTOR / EMERGENCIA*
+*Nombre:* ${tutor.value}
+*Teléfono:* ${tel_tutor.value}
+*Parentesco:* ${parentesco.value}
+*Ocupación:* ${ocupacion.value}`;
 
-window.open("https://wa.me/529987593954?text="+encodeURIComponent(msg));
+window.open(`https://wa.me/529987593954?text=${encodeURIComponent(msg)}`);
 
+alert("Inscripción enviada correctamente ✅");
 }
+
+// FIX IDs
+const cursoEl = document.getElementById("curso");
+const horarioEl = document.getElementById("horario");
 
 </script>
 
