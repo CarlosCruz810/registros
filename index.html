@@ -19,29 +19,16 @@ body {
     padding:20px;
     margin-top:20px;
 }
-h2 { text-align:center; }
-
-.step { display:none; }
-.step.active { display:block; }
-
-input, select {
+input, select, button {
     width:100%;
-    padding:14px;
+    padding:12px;
     margin-top:10px;
     border-radius:10px;
-    border:1px solid #ddd;
 }
-
 button {
-    width:100%;
-    padding:15px;
-    margin-top:15px;
-    border:none;
-    border-radius:12px;
     background:#25d366;
     color:#fff;
-    font-weight:bold;
-    cursor:pointer;
+    border:none;
 }
 </style>
 </head>
@@ -51,26 +38,17 @@ button {
 <div class="container">
 <h2>Inscripción</h2>
 
-<!-- PASO 1 -->
-<div class="step active">
-
-<select id="curso" onchange="actualizarHorarios()">
+<select id="curso" onchange="cargarHorarios()">
 <option disabled selected>Selecciona curso</option>
-
 <option>Bachillerato Garantizado</option>
 <option>Bachillerato Livier</option>
-
 <option>Primaria</option>
 <option>Secundaria</option>
-
 <option>Asistente Educativo</option>
-
 <option>Inglés Kids y Teens</option>
 <option>Lectoescritura Kids y Teens</option>
-
 <option>Computación 6 meses</option>
 <option>Computación + Inglés</option>
-
 <option>Colorimetría</option>
 <option>Tratamientos Capilares</option>
 <option>Maquillaje Profesional</option>
@@ -84,191 +62,78 @@ button {
 <option disabled selected>Selecciona horario</option>
 </select>
 
-<button onclick="next()">Continuar</button>
-</div>
-
-<!-- PASO 2 -->
-<div class="step">
 <input id="nombre" placeholder="Nombre completo">
 <input id="nacionalidad" placeholder="Nacionalidad">
 <input id="fecha" placeholder="DD/MM/AAAA">
-<input id="edad" type="number" placeholder="Edad">
+<input id="edad" placeholder="Edad">
 <input id="telefono" placeholder="Teléfono">
 <input id="correo" placeholder="Correo">
 <input id="domicilio" placeholder="Domicilio">
-<input id="estudios" placeholder="Último grado de estudios">
+<input id="estudios" placeholder="Estudios">
 
-<button onclick="prev()">Atrás</button>
-<button onclick="next()">Continuar</button>
-</div>
-
-<!-- PASO 3 -->
-<div class="step">
-<input id="tutor" placeholder="Nombre tutor">
+<input id="tutor" placeholder="Tutor">
 <input id="tel_tutor" placeholder="Tel tutor">
 <input id="parentesco" placeholder="Parentesco">
 <input id="ocupacion" placeholder="Ocupación">
 
-<button onclick="prev()">Atrás</button>
-<button onclick="guardar()">Enviar inscripción</button>
-</div>
+<button onclick="enviar()">Enviar inscripción</button>
 
 </div>
 
 <script>
 
-// FORMATO FECHA
-document.getElementById('fecha').addEventListener('input', e=>{
-let v=e.target.value.replace(/\D/g,'').slice(0,8);
-if(v.length>=5)
-e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,4})/,'$1/$2/$3');
-else if(v.length>=3)
-e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
-});
-
-// HORARIOS COMPLETOS CON FECHAS Y COSTOS
-const opciones = {
-
-"Bachillerato Garantizado":[
-"Sáb 18 Abril 2026 - Tulum - 4pm-9pm - $360/$450",
-"Sáb 16 Mayo 2026 - Lakin - 4pm-9pm - $360/$450",
-"Dom 17 Mayo 2026 - Kabah - 8am-1pm - $360/$450",
-"Online 18 Abril / 16 Mayo - 4pm-9pm - $360/$450"
-],
-
-"Bachillerato Livier":[
-"Lun 20 Abril 2026 - Kabah - 7:30am-10am - $350/$400",
-"Lun 20 Abril 2026 - Lakin - 3pm-5:30pm - $350/$400"
-],
-
+const horarios = {
 "Primaria":[
-"Mar/Mié 21 Abril 2026 - Kabah - 6pm-8pm - $250/$300",
-"Dom 3 Mayo 2026 - Kabah - 9am-1pm - $250/$300",
-"Mar/Mié 21 Abril 2026 - Lakin - 6pm-8pm - $250/$300"
+"Kabah Mar/Mié 6-8pm",
+"Kabah Domingo 9-1pm",
+"Lakin Mar/Mié 6-8pm"
 ],
-
 "Secundaria":[
-"Mar/Mié 21 Abril 2026 - Kabah - 6pm-8pm - $250/$300",
-"Dom 3 Mayo 2026 - Kabah - 9am-1pm - $250/$300",
-"Mar/Mié 21 Abril 2026 - Lakin - 6pm-8pm - $250/$300"
-],
-
-"Asistente Educativo":[
-"Lun/Jue 30 Marzo 2026 - Kabah - 5:30pm-8:30pm - $280/$330",
-"Sáb 11 Abril 2026 - Kabah - 7am-1pm - $280/$330"
-],
-
-"Inglés Kids y Teens":[
-"Sáb 25 Abril 2026 - Kabah - 1pm-4pm - $150/$200",
-"Sáb 25 Abril 2026 - Lakin - 1pm-4pm - $150/$200"
-],
-
-"Lectoescritura Kids y Teens":[
-"Sáb 25 Abril 2026 - Tulum - 12pm-4pm - $200/$250"
-],
-
-"Computación 6 meses":[
-"Sáb 14 Marzo 2026 - Lakin - 8am-12pm - $200/$250"
-],
-
-"Computación + Inglés":[
-"Sáb 18 Abril 2026 - Lakin - 4pm-8pm - $200/$250"
-],
-
-// BEAUTY
-"Colorimetría":["Lakin - Lunes a Sábado - $250/$550"],
-"Tratamientos Capilares":["Lakin - Lunes a Sábado - $250/$550"],
-"Maquillaje Profesional":["Lakin - Lunes a Sábado - $250/$550"],
-"Cortes y Barbería":["Lakin - Lunes a Sábado - $250/$550"],
-"Uñas Artísticas":["Lakin - Lunes a Sábado - $250/$550"],
-"Lashista":["Lakin - Lunes a Sábado - $250/$550"],
-"Terapeuta Spa":["Lakin - Lunes a Sábado - $250/$550"]
+"Kabah Mar/Mié 6-8pm",
+"Kabah Domingo 9-1pm",
+"Lakin Mar/Mié 6-8pm"
+]
 };
 
-// DURACIÓN
-const duraciones = {
-"Bachillerato Garantizado":"22 semanas",
-"Bachillerato Livier":"2 años",
-"Primaria":"6 meses",
-"Secundaria":"6 meses",
-"Asistente Educativo":"18 meses",
-"Terapeuta Spa":"18 meses",
-"Inglés Kids y Teens":"7 meses",
-"Lectoescritura Kids y Teens":"7 meses",
-"Computación + Inglés":"12 meses",
-"Computación 6 meses":"12 meses",
-"Cortes y Barbería":"6 meses",
-"Lashista":"4 meses",
-"Maquillaje Profesional":"4 meses",
-"Colorimetría":"4 meses",
-"Tratamientos Capilares":"4 meses",
-"Uñas Artísticas":"4 meses"
-};
-
-// ACTUALIZAR HORARIOS
-function actualizarHorarios(){
-let c=document.getElementById("curso").value;
-let h=document.getElementById("horario");
-
-h.innerHTML='<option disabled selected>Selecciona horario</option>';
-
-opciones[c]?.forEach(x=>{
-let o=document.createElement("option");
-o.value=x;
-o.textContent=x;
-h.appendChild(o);
-});
-}
-
-// STEPS
-let step=0;
-const steps=document.querySelectorAll(".step");
-
-function show(){
-steps.forEach(s=>s.classList.remove("active"));
-steps[step].classList.add("active");
-}
-
-function next(){ if(step<2) step++; show(); }
-function prev(){ if(step>0) step--; show(); }
-
-// ENVIAR
-function guardar(){
-
+function cargarHorarios(){
 let curso=document.getElementById("curso").value;
-let horario=document.getElementById("horario").value;
+let select=document.getElementById("horario");
+select.innerHTML="<option>Selecciona horario</option>";
+
+if(horarios[curso]){
+horarios[curso].forEach(h=>{
+let op=document.createElement("option");
+op.textContent=h;
+select.appendChild(op);
+});
+}else{
+let op=document.createElement("option");
+op.textContent="Horario disponible según plantel";
+select.appendChild(op);
+}
+}
+
+function enviar(){
 
 let msg=`*1. PROGRAMA*
-*Curso:* ${curso}
-*Horario:* ${horario}
-*Duración:* ${duraciones[curso]}
-*Inscripción:* $800
+Curso: ${curso.value}
+Horario: ${horario.value}
+Inscripción: $800
 
-*2. DATOS DEL ALUMNO*
-*Nombre:* ${nombre.value}
-*Nacionalidad:* ${nacionalidad.value}
-*Fecha Nac:* ${fecha.value}
-*Edad:* ${edad.value}
-*Teléfono:* ${telefono.value}
-*Correo:* ${correo.value}
-*Domicilio:* ${domicilio.value}
-*Estudios:* ${estudios.value}
+*2. DATOS*
+Nombre: ${nombre.value}
+Teléfono: ${telefono.value}
+Correo: ${correo.value}
 
-*3. TUTOR / EMERGENCIA*
-*Nombre:* ${tutor.value}
-*Teléfono:* ${tel_tutor.value}
-*Parentesco:* ${parentesco.value}
-*Ocupación:* ${ocupacion.value}`;
+*3. TUTOR*
+Nombre: ${tutor.value}
+Tel: ${tel_tutor.value}`;
 
-window.open(`https://wa.me/529987593954?text=${encodeURIComponent(msg)}`);
+window.open("https://wa.me/529987593954?text="+encodeURIComponent(msg));
 
-alert("Inscripción enviada correctamente ✅");
 }
 
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
