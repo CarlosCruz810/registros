@@ -20,6 +20,7 @@ body {
     margin-top:20px;
 }
 h2 { text-align:center; }
+
 .step { display:none; }
 .step.active { display:block; }
 
@@ -105,11 +106,11 @@ button {
 
 <!-- PASO 2 -->
 <div class="step">
-<input id="nombre" placeholder="Nombre(s)" autocomplete="given-name">
-<input id="apellidos" placeholder="Apellidos" autocomplete="family-name">
-<input id="fecha" placeholder="DD/MM/AAAA">
-<input id="telefono" placeholder="Teléfono" autocomplete="tel">
-<input id="correo" placeholder="Correo" autocomplete="email">
+<input id="nombre" placeholder="Nombre(s)">
+<input id="apellidos" placeholder="Apellidos">
+<input id="fecha" placeholder="DD/MM/AA">
+<input id="telefono" placeholder="Teléfono">
+<input id="correo" placeholder="Correo">
 
 <button onclick="prev()">Atrás</button>
 <button onclick="next()">Continuar</button>
@@ -140,31 +141,33 @@ const horariosBeauty = [
 "📍 Lakin - Sábado 2pm-8pm"
 ];
 
-// HORARIOS GENERALES
+// HORARIOS
 const opciones = {
-
-"Bachillerato Garantizado":[
-"📍 Tulum - Sáb 16 Mayo 4pm-9pm",
-"📍 Lakin - Sáb 16 Mayo 4pm-9pm",
-"💻 Online - Sáb 16 Mayo 4pm-9pm",
-"📍 Kabah - Dom 17 Mayo 8am-1pm"
-],
-
-"Bachillerato Livier":[
-"📍 Kabah - Lun 18 Mayo 7:30am-10am",
-"📍 Lakin - Lun 18 Mayo 3pm-5:30pm"
-],
 
 "Primaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
 "📍 Lakin - Mar/Mié 6pm-8pm",
 "📍 Kabah - Dom 9am-1pm",
+"📍 Lakin - Dom 9am-1pm"
 ],
 
 "Secundaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
 "📍 Lakin - Mar/Mié 6pm-8pm",
 "📍 Kabah - Dom 9am-1pm",
+"📍 Lakin - Dom 9am-1pm"
+],
+
+"Bachillerato Garantizado":[
+"📍 Tulum - Sáb 4pm-9pm",
+"📍 Lakin - Sáb 4pm-9pm",
+"💻 Online - Sáb 4pm-9pm",
+"📍 Kabah - Dom 8am-1pm"
+],
+
+"Bachillerato Livier":[
+"📍 Kabah - Lun 7:30am-10am",
+"📍 Lakin - Lun 3pm-5:30pm"
 ],
 
 "Asistente Educativo":[
@@ -198,7 +201,7 @@ const opciones = {
 "Terapeuta Spa": horariosBeauty
 };
 
-// ACTUALIZAR HORARIOS
+// actualizar horarios
 function actualizarHorarios(){
 let c=document.getElementById("curso").value;
 let h=document.getElementById("horario");
@@ -212,7 +215,7 @@ h.appendChild(o);
 });
 }
 
-// STEPS
+// steps
 let step=0;
 const steps=document.querySelectorAll(".step");
 
@@ -225,14 +228,14 @@ document.getElementById("bar").style.width=((step+1)*33)+"%";
 function next(){ if(step<2) step++; show(); }
 function prev(){ if(step>0) step--; show(); }
 
-// FECHA FORMATO
+// fecha formato
 document.getElementById('fecha').addEventListener('input', e=>{
 let v=e.target.value.replace(/\D/g,'').slice(0,6);
 if(v.length>=5) e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,2})/,'$1/$2/$3');
 else if(v.length>=3) e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
 });
 
-// GUARDAR
+// guardar
 async function guardar(){
 
 let data = {
@@ -253,16 +256,16 @@ try {
     await fetch("https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec", {
         method: "POST",
         body: JSON.stringify(data),
-        headers: {"Content-Type": "application/json"}
+        mode: "no-cors"
     });
 
     let msg = `Nueva inscripción%0A${data.nombre}%0ACurso: ${data.curso}%0AHorario: ${data.horario}`;
     window.open(`https://wa.me/529987593954?text=${msg}`);
 
-    alert("Inscripción guardada correctamente ✅");
+    alert("Inscripción enviada ✅");
 
 } catch(error){
-    alert("Error al guardar ❌");
+    alert("Error ❌");
     console.error(error);
 }
 }
