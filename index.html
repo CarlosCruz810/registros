@@ -11,6 +11,7 @@ body {
     margin:0;
     background: linear-gradient(135deg,#1a5c58,#25d366);
 }
+
 .container {
     max-width:500px;
     margin:auto;
@@ -19,12 +20,18 @@ body {
     padding:20px;
     margin-top:20px;
 }
+
+.step { display:none; }
+.step.active { display:block; }
+
 input, select {
     width:100%;
     padding:14px;
     margin-top:10px;
     border-radius:10px;
+    border:1px solid #ddd;
 }
+
 button {
     width:100%;
     padding:15px;
@@ -33,6 +40,21 @@ button {
     border-radius:12px;
     background:#25d366;
     color:#fff;
+    font-weight:bold;
+}
+
+.progress {
+    height:6px;
+    background:#eee;
+    margin-bottom:15px;
+    border-radius:10px;
+}
+
+.bar {
+    height:100%;
+    width:33%;
+    background:#25d366;
+    border-radius:10px;
 }
 </style>
 </head>
@@ -41,10 +63,15 @@ button {
 
 <div class="container">
 
+<div class="progress"><div class="bar" id="bar"></div></div>
+
 <h2>Inscripción</h2>
 
+<!-- PASO 1 -->
+<div class="step active">
 <select id="curso" onchange="actualizarHorarios()">
-<option disabled selected>Curso</option>
+<option disabled selected>Selecciona curso</option>
+
 <option>Bachillerato Garantizado</option>
 <option>Bachillerato Livier</option>
 <option>Primaria</option>
@@ -54,31 +81,43 @@ button {
 <option>Lectoescritura Kids y Teens</option>
 <option>Computación 6 meses</option>
 <option>Computación + Inglés</option>
+<option>Colorimetría</option>
+<option>Tratamientos Capilares</option>
+<option>Maquillaje Profesional</option>
 <option>Cortes y Barbería</option>
 <option>Uñas Artísticas</option>
 <option>Lashista</option>
-<option>Maquillaje Profesional</option>
-<option>Colorimetría</option>
-<option>Tratamientos Capilares</option>
 <option>Terapeuta Spa</option>
 </select>
 
 <select id="horario"></select>
 
+<button onclick="next()">Continuar</button>
+</div>
+
+<!-- PASO 2 -->
+<div class="step">
 <input id="nombre" placeholder="Nombre completo">
 <input id="telefono" placeholder="Teléfono">
 <input id="correo" placeholder="Correo">
-<input id="fecha" placeholder="Fecha nacimiento (DD/MM/AAAA)">
-<input id="domicilio" placeholder="Domicilio">
+<input id="fecha" placeholder="Fecha nacimiento DD/MM/AAAA">
 <input id="nacionalidad" placeholder="Nacionalidad">
+<input id="domicilio" placeholder="Domicilio">
 
-<h4>Tutor</h4>
+<button onclick="prev()">Atrás</button>
+<button onclick="next()">Continuar</button>
+</div>
+
+<!-- PASO 3 -->
+<div class="step">
 <input id="tutor" placeholder="Nombre tutor">
 <input id="tel_tutor" placeholder="Tel tutor">
 <input id="parentesco" placeholder="Parentesco">
 <input id="ocupacion" placeholder="Ocupación">
 
+<button onclick="prev()">Atrás</button>
 <button onclick="guardar()">Enviar</button>
+</div>
 
 </div>
 
@@ -86,15 +125,70 @@ button {
 
 const API = "https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec";
 
+const horariosBeauty = [
+"📍 Lakin - Lunes 8am-2pm",
+"📍 Lakin - Martes 8am-2pm",
+"📍 Lakin - Miércoles 8am-2pm",
+"📍 Lakin - Jueves 2pm-8pm",
+"📍 Lakin - Viernes 2pm-8pm",
+"📍 Lakin - Sábado 8am-2pm",
+"📍 Lakin - Sábado 2pm-8pm"
+];
+
 const opciones = {
+
 "Primaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
 "📍 Lakin - Mar/Mié 6pm-8pm"
 ],
+
 "Secundaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
 "📍 Lakin - Mar/Mié 6pm-8pm"
-]
+],
+
+"Bachillerato Garantizado":[
+"📍 Tulum - Sáb 4pm-9pm",
+"📍 Lakin - Sáb 4pm-9pm",
+"💻 Online - Sáb 4pm-9pm",
+"📍 Kabah - Dom 8am-1pm"
+],
+
+"Bachillerato Livier":[
+"📍 Kabah - Lun 7:30am-10am",
+"📍 Lakin - Lun 3pm-5:30pm"
+],
+
+"Asistente Educativo":[
+"📍 Kabah - Lun/Jue 5:30pm-8:30pm",
+"📍 Kabah - Sáb 7am-1pm"
+],
+
+"Inglés Kids y Teens":[
+"📍 Kabah - Sáb 1pm-4pm",
+"📍 Lakin - Sáb 1pm-4pm"
+],
+
+"Lectoescritura Kids y Teens":[
+"📍 Tulum - Sáb 12pm-4pm"
+],
+
+"Computación 6 meses":[
+"📍 Lakin - Sáb 8am-12pm"
+],
+
+"Computación + Inglés":[
+"📍 Lakin - Sáb 4pm-8pm"
+],
+
+"Colorimetría": horariosBeauty,
+"Tratamientos Capilares": horariosBeauty,
+"Maquillaje Profesional": horariosBeauty,
+"Cortes y Barbería": horariosBeauty,
+"Uñas Artísticas": horariosBeauty,
+"Lashista": horariosBeauty,
+"Terapeuta Spa": horariosBeauty
+
 };
 
 function actualizarHorarios(){
@@ -108,6 +202,20 @@ h.appendChild(o);
 });
 }
 
+// STEPS
+let step=0;
+const steps=document.querySelectorAll(".step");
+
+function show(){
+steps.forEach(s=>s.classList.remove("active"));
+steps[step].classList.add("active");
+document.getElementById("bar").style.width=((step+1)*33)+"%";
+}
+
+function next(){ if(step<2) step++; show(); }
+function prev(){ if(step>0) step--; show(); }
+
+// GUARDAR
 async function guardar(){
 
 let data = {
@@ -116,6 +224,9 @@ telefono: document.getElementById("telefono").value,
 correo: document.getElementById("correo").value,
 curso: document.getElementById("curso").value,
 horario: document.getElementById("horario").value,
+fecha: document.getElementById("fecha").value,
+nacionalidad: document.getElementById("nacionalidad").value,
+domicilio: document.getElementById("domicilio").value,
 tutor: document.getElementById("tutor").value,
 tel_tutor: document.getElementById("tel_tutor").value,
 parentesco: document.getElementById("parentesco").value,
@@ -127,45 +238,39 @@ method:"POST",
 body:JSON.stringify(data)
 });
 
-
-// 📲 WHATSAPP ADMIN
+// WHATSAPP ADMIN
 let adminMsg = `📥 NUEVA INSCRIPCIÓN
 Curso: ${data.curso}
 Horario: ${data.horario}
 
 Alumno: ${data.nombre}
-Tel: ${data.telefono}
-
-Tutor: ${data.tutor}
-`;
+Tel: ${data.telefono}`;
 
 window.open(`https://wa.me/529987593954?text=${encodeURIComponent(adminMsg)}`);
 
-
-// 📲 WHATSAPP CLIENTE
+// WHATSAPP CLIENTE
 let clienteMsg = `Hola ${data.nombre} 👋
 
-Tu inscripción fue recibida ✅
+Tu inscripción fue registrada ✅
 
 💳 FORMAS DE PAGO:
-
-Transferencia:
-Banco Santander
+Santander
 Cuenta: 65-50895178-1
 CLABE: 014691655089517814
 
 Tarjeta:
 5579 0890 0527 7178
 
-También puedes pagar en caja en plantel.
+También puedes pagar en plantel.
 
-Envía tu comprobante para confirmar tu lugar.`;
+Envía tu comprobante 🙌`;
 
 window.open(`https://wa.me/52${data.telefono}?text=${encodeURIComponent(clienteMsg)}`);
 
 alert("Inscripción enviada ✅");
 
 }
+
 </script>
 
 </body>
