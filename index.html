@@ -6,20 +6,25 @@
 <title>Inscripción Instituto Livier</title>
 
 <style>
-body { font-family: system-ui; margin:0; background: linear-gradient(135deg,#1a5c58,#25d366); }
-.container { max-width:500px; margin:auto; background:#fff; border-radius:20px; padding:20px; margin-top:20px; }
-h2 { text-align:center; }
-.step { display:none; }
-.step.active { display:block; }
-
-input, select, textarea {
+body {
+    font-family: system-ui;
+    margin:0;
+    background: linear-gradient(135deg,#1a5c58,#25d366);
+}
+.container {
+    max-width:500px;
+    margin:auto;
+    background:#fff;
+    border-radius:20px;
+    padding:20px;
+    margin-top:20px;
+}
+input, select {
     width:100%;
     padding:14px;
     margin-top:10px;
     border-radius:10px;
-    border:1px solid #ddd;
 }
-
 button {
     width:100%;
     padding:15px;
@@ -28,25 +33,18 @@ button {
     border-radius:12px;
     background:#25d366;
     color:#fff;
-    font-weight:bold;
-    cursor:pointer;
 }
-
-.progress { height:6px; background:#eee; margin-bottom:15px; border-radius:10px; }
-.bar { height:100%; width:33%; background:#25d366; border-radius:10px; }
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<div class="progress"><div class="bar" id="bar"></div></div>
+
 <h2>Inscripción</h2>
 
-<!-- PASO 1 -->
-<div class="step active">
 <select id="curso" onchange="actualizarHorarios()">
-<option disabled selected>Selecciona curso</option>
+<option disabled selected>Curso</option>
 <option>Bachillerato Garantizado</option>
 <option>Bachillerato Livier</option>
 <option>Primaria</option>
@@ -56,198 +54,118 @@ button {
 <option>Lectoescritura Kids y Teens</option>
 <option>Computación 6 meses</option>
 <option>Computación + Inglés</option>
-<option>Colorimetría</option>
-<option>Tratamientos Capilares</option>
-<option>Maquillaje Profesional</option>
 <option>Cortes y Barbería</option>
 <option>Uñas Artísticas</option>
 <option>Lashista</option>
+<option>Maquillaje Profesional</option>
+<option>Colorimetría</option>
+<option>Tratamientos Capilares</option>
 <option>Terapeuta Spa</option>
 </select>
 
-<select id="horario">
-<option disabled selected>Selecciona horario</option>
-</select>
+<select id="horario"></select>
 
-<button onclick="next()">Continuar</button>
-</div>
-
-<!-- PASO 2 -->
-<div class="step">
-<input id="nombre" placeholder="Nombre(s)">
-<input id="apellidos" placeholder="Apellidos">
-<input id="nacionalidad" placeholder="Nacionalidad">
-<input id="fecha" placeholder="DD/MM/AAAA">
-<input id="edad" type="number" placeholder="Edad">
+<input id="nombre" placeholder="Nombre completo">
 <input id="telefono" placeholder="Teléfono">
 <input id="correo" placeholder="Correo">
-<textarea id="domicilio" placeholder="Domicilio"></textarea>
+<input id="fecha" placeholder="Fecha nacimiento (DD/MM/AAAA)">
+<input id="domicilio" placeholder="Domicilio">
+<input id="nacionalidad" placeholder="Nacionalidad">
 
-<button onclick="prev()">Atrás</button>
-<button onclick="next()">Continuar</button>
-</div>
-
-<!-- PASO 3 -->
-<div class="step">
+<h4>Tutor</h4>
 <input id="tutor" placeholder="Nombre tutor">
 <input id="tel_tutor" placeholder="Tel tutor">
 <input id="parentesco" placeholder="Parentesco">
 <input id="ocupacion" placeholder="Ocupación">
 
-<button onclick="prev()">Atrás</button>
-<button onclick="guardar()">Guardar y Enviar</button>
-</div>
+<button onclick="guardar()">Enviar</button>
 
 </div>
 
 <script>
 
-// HORARIOS
-const horariosBeauty = [
-"📍 Lakin - Lunes 8am-2pm",
-"📍 Lakin - Martes 8am-2pm",
-"📍 Lakin - Miércoles 8am-2pm",
-"📍 Lakin - Jueves 2pm-8pm",
-"📍 Lakin - Viernes 2pm-8pm",
-"📍 Lakin - Sábado 8am-2pm",
-"📍 Lakin - Sábado 2pm-8pm"
-];
+const API = "https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec";
 
 const opciones = {
-"Primaria":[ "📍 Kabah - Mar/Mié 6pm-8pm","📍 Lakin - Mar/Mié 6pm-8pm"],
-"Secundaria":[ "📍 Kabah - Mar/Mié 6pm-8pm","📍 Lakin - Mar/Mié 6pm-8pm"],
-"Bachillerato Garantizado":[
-"📍 Tulum - Sáb 4pm-9pm","📍 Lakin - Sáb 4pm-9pm","💻 Online - Sáb 4pm-9pm","📍 Kabah - Dom 8am-1pm"
+"Primaria":[
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Lakin - Mar/Mié 6pm-8pm"
 ],
-"Bachillerato Livier":[
-"📍 Kabah - Lun 7:30am-10am","📍 Lakin - Lun 3pm-5:30pm"
-],
-"Asistente Educativo":[
-"📍 Kabah - Lun/Jue 5:30pm-8:30pm","📍 Kabah - Sáb 7am-1pm"
-],
-"Inglés Kids y Teens":[
-"📍 Kabah - Sáb 1pm-4pm","📍 Lakin - Sáb 1pm-4pm"
-],
-"Lectoescritura Kids y Teens":[
-"📍 Tulum - Sáb 12pm-4pm"
-],
-"Computación 6 meses":[
-"📍 Lakin - Sáb 8am-12pm"
-],
-"Computación + Inglés":[
-"📍 Lakin - Sáb 4pm-8pm"
-],
-
-"Colorimetría": horariosBeauty,
-"Tratamientos Capilares": horariosBeauty,
-"Maquillaje Profesional": horariosBeauty,
-"Cortes y Barbería": horariosBeauty,
-"Uñas Artísticas": horariosBeauty,
-"Lashista": horariosBeauty,
-"Terapeuta Spa": horariosBeauty
+"Secundaria":[
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Lakin - Mar/Mié 6pm-8pm"
+]
 };
 
-// DURACIONES
-const duraciones = {
-"Bachillerato Garantizado": "22 semanas",
-"Bachillerato Livier": "2 años",
-"Primaria": "6 meses",
-"Secundaria": "6 meses",
-"Asistente Educativo": "18 meses",
-"Terapeuta Spa": "18 meses",
-"Inglés Kids y Teens": "7 meses",
-"Lectoescritura Kids y Teens": "7 meses",
-"Computación 6 meses": "12 meses",
-"Computación + Inglés": "12 meses",
-"Cortes y Barbería": "6 meses",
-"Lashista": "4 meses",
-"Maquillaje Profesional": "4 meses",
-"Colorimetría": "4 meses",
-"Tratamientos Capilares": "4 meses",
-"Uñas Artísticas": "4 meses"
-};
-
-// actualizar horarios
 function actualizarHorarios(){
 let c=document.getElementById("curso").value;
 let h=document.getElementById("horario");
-h.innerHTML='<option disabled selected>Selecciona horario</option>';
-
-opciones[c]?.forEach(x=>{
+h.innerHTML="";
+(opciones[c]||[]).forEach(x=>{
 let o=document.createElement("option");
 o.textContent=x;
 h.appendChild(o);
 });
 }
 
-// navegación
-let step=0;
-const steps=document.querySelectorAll(".step");
-function show(){
-steps.forEach(s=>s.classList.remove("active"));
-steps[step].classList.add("active");
-document.getElementById("bar").style.width=((step+1)*33)+"%";
-}
-function next(){ if(step<2) step++; show(); }
-function prev(){ if(step>0) step--; show(); }
-
-// formato fecha
-document.getElementById('fecha').addEventListener('input', e=>{
-let v=e.target.value.replace(/\D/g,'').slice(0,8);
-if(v.length>=5) e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,4})/,'$1/$2/$3');
-else if(v.length>=3) e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
-});
-
-// GUARDAR
 async function guardar(){
 
-let curso = document.getElementById("curso").value;
-let horario = document.getElementById("horario").value;
-
-// plantel
-let plantel = horario.includes("Kabah") ? "Kabah" :
-              horario.includes("Lakin") ? "Lakin" :
-              horario.includes("Tulum") ? "Tulum" :
-              horario.includes("Online") ? "Online" : "N/A";
-
-// día
-let dia="No definido";
-if(horario.includes("Lun")) dia="Lunes";
-else if(horario.includes("Mar")) dia="Martes";
-else if(horario.includes("Mié")) dia="Miércoles";
-else if(horario.includes("Jue")) dia="Jueves";
-else if(horario.includes("Vie")) dia="Viernes";
-else if(horario.includes("Sáb")) dia="Sábado";
-else if(horario.includes("Dom")) dia="Domingo";
-
-// duración
-let duracion = duraciones[curso] || "Consultar";
-
 let data = {
-nombre: document.getElementById("nombre").value + " " + document.getElementById("apellidos").value,
+nombre: document.getElementById("nombre").value,
 telefono: document.getElementById("telefono").value,
 correo: document.getElementById("correo").value,
-curso, horario, plantel, dia, duracion
+curso: document.getElementById("curso").value,
+horario: document.getElementById("horario").value,
+tutor: document.getElementById("tutor").value,
+tel_tutor: document.getElementById("tel_tutor").value,
+parentesco: document.getElementById("parentesco").value,
+ocupacion: document.getElementById("ocupacion").value
 };
 
-// enviar a sheets
-await fetch("https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec", {
+await fetch(API,{
 method:"POST",
-body:JSON.stringify(data),
-mode:"no-cors"
+body:JSON.stringify(data)
 });
 
-// WHATSAPP TUYO
-let msgAdmin = `INSCRIPCIÓN%0A${data.nombre}%0A${curso}%0A${horario}%0A${plantel}`;
-window.open(`https://wa.me/529987593954?text=${msgAdmin}`);
 
-// WHATSAPP ALUMNO
-let msgAlumno = `Hola ${data.nombre}, tu inscripción fue registrada.%0ACurso: ${curso}%0ADía: ${dia}%0AHorario: ${horario}`;
-window.open(`https://wa.me/52${data.telefono}?text=${msgAlumno}`);
+// 📲 WHATSAPP ADMIN
+let adminMsg = `📥 NUEVA INSCRIPCIÓN
+Curso: ${data.curso}
+Horario: ${data.horario}
 
-alert("Inscripción enviada");
+Alumno: ${data.nombre}
+Tel: ${data.telefono}
+
+Tutor: ${data.tutor}
+`;
+
+window.open(`https://wa.me/529987593954?text=${encodeURIComponent(adminMsg)}`);
+
+
+// 📲 WHATSAPP CLIENTE
+let clienteMsg = `Hola ${data.nombre} 👋
+
+Tu inscripción fue recibida ✅
+
+💳 FORMAS DE PAGO:
+
+Transferencia:
+Banco Santander
+Cuenta: 65-50895178-1
+CLABE: 014691655089517814
+
+Tarjeta:
+5579 0890 0527 7178
+
+También puedes pagar en caja en plantel.
+
+Envía tu comprobante para confirmar tu lugar.`;
+
+window.open(`https://wa.me/52${data.telefono}?text=${encodeURIComponent(clienteMsg)}`);
+
+alert("Inscripción enviada ✅");
+
 }
-
 </script>
 
 </body>
