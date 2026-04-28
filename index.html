@@ -11,7 +11,6 @@ body {
     margin:0;
     background: linear-gradient(135deg,#1a5c58,#25d366);
 }
-
 .container {
     max-width:500px;
     margin:auto;
@@ -20,9 +19,7 @@ body {
     padding:20px;
     margin-top:20px;
 }
-
 h2 { text-align:center; }
-
 .step { display:none; }
 .step.active { display:block; }
 
@@ -72,17 +69,27 @@ button {
 
 <!-- PASO 1 -->
 <div class="step active">
+
 <select id="curso" onchange="actualizarHorarios()">
 <option disabled selected>Selecciona curso</option>
+
 <option>Bachillerato Garantizado</option>
 <option>Bachillerato Livier</option>
-<option>Primaria y Secundaria</option>
+
+<option>Primaria</option>
+<option>Secundaria</option>
+
 <option>Asistente Educativo</option>
+
 <option>Inglés Kids y Teens</option>
-<option>Lectoescritura</option>
-<option>Computación</option>
+<option>Lectoescritura Kids y Teens</option>
+
+<option>Computación 6 meses</option>
 <option>Computación + Inglés</option>
+
 <option>Colorimetría</option>
+<option>Tratamientos Capilares</option>
+<option>Maquillaje Profesional</option>
 <option>Cortes y Barbería</option>
 <option>Uñas Artísticas</option>
 <option>Lashista</option>
@@ -100,7 +107,6 @@ button {
 <div class="step">
 <input id="nombre" placeholder="Nombre(s)" autocomplete="given-name">
 <input id="apellidos" placeholder="Apellidos" autocomplete="family-name">
-
 <input id="fecha" placeholder="DD/MM/AA">
 <input id="telefono" placeholder="Teléfono" autocomplete="tel">
 <input id="correo" placeholder="Correo" autocomplete="email">
@@ -123,54 +129,75 @@ button {
 
 <script>
 
-// HORARIOS
+// HORARIOS BEAUTY
 const horariosBeauty = [
-"Lunes (Lakin) 8am-2pm",
-"Martes (Lakin) 8am-2pm",
-"Miércoles (Lakin) 8am-2pm",
-"Jueves (Lakin) 2pm-8pm",
-"Viernes (Lakin) 2pm-8pm",
-"Sábado (Lakin) 8am-2pm",
-"Sábado (Lakin) 2pm-8pm"
+"📍 Lakin - Lunes 8am-2pm",
+"📍 Lakin - Martes 8am-2pm",
+"📍 Lakin - Miércoles 8am-2pm",
+"📍 Lakin - Jueves 2pm-8pm",
+"📍 Lakin - Viernes 2pm-8pm",
+"📍 Lakin - Sábado 8am-2pm",
+"📍 Lakin - Sábado 2pm-8pm"
 ];
 
+// HORARIOS GENERALES
 const opciones = {
+
 "Bachillerato Garantizado":[
-"Sáb 16 Mayo (Tulum) 4pm-9pm",
-"Sáb 16 Mayo (Lakin) 4pm-9pm",
-"Sáb 16 Mayo (Online) 4pm-9pm",
-"Dom 17 Mayo (Kabah) 8am-1pm"
-],
-"Bachillerato Livier":[
-"Lun 18 Mayo (Kabah) 7:30am-10am",
-"Lun 18 Mayo (Lakin) 3pm-5:30pm"
-],
-"Primaria y Secundaria":[
-"Mar/Mié 26 Mayo (Kabah/Lakin) 6pm-8pm",
-"Dom 7 Junio (Kabah) 9am-1pm"
-],
-"Asistente Educativo":[
-"Lun/Jue (Kabah) 5:30pm-8:30pm",
-"Sáb (Kabah) 7am-1pm"
-],
-"Inglés Kids y Teens":[
-"Sáb 30 Mayo (Kabah/Lakin) 1pm-4pm"
-],
-"Lectoescritura":[
-"Sáb 30 Mayo (Tulum) 12pm-4pm"
-],
-"Computación":[
-"Ingreso disponible (consultar asesor)"
-],
-"Computación + Inglés":[
-"Sáb (Lakin) 4pm-8pm"
+"📍 Tulum - Sáb 16 Mayo 4pm-9pm",
+"📍 Lakin - Sáb 16 Mayo 4pm-9pm",
+"💻 Online - Sáb 16 Mayo 4pm-9pm",
+"📍 Kabah - Dom 17 Mayo 8am-1pm"
 ],
 
-"Colorimetría":horariosBeauty,
-"Cortes y Barbería":horariosBeauty,
-"Uñas Artísticas":horariosBeauty,
-"Lashista":horariosBeauty,
-"Terapeuta Spa":horariosBeauty
+"Bachillerato Livier":[
+"📍 Kabah - Lun 18 Mayo 7:30am-10am",
+"📍 Lakin - Lun 18 Mayo 3pm-5:30pm"
+],
+
+"Primaria":[
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Lakin - Mar/Mié 6pm-8pm",
+"📍 Kabah - Dom 9am-1pm",
+"📍 Lakin - Dom 9am-1pm"
+],
+
+"Secundaria":[
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Lakin - Mar/Mié 6pm-8pm",
+"📍 Kabah - Dom 9am-1pm",
+"📍 Lakin - Dom 9am-1pm"
+],
+
+"Asistente Educativo":[
+"📍 Kabah - Lun/Jue 5:30pm-8:30pm",
+"📍 Kabah - Sáb 7am-1pm"
+],
+
+"Inglés Kids y Teens":[
+"📍 Kabah - Sáb 1pm-4pm",
+"📍 Lakin - Sáb 1pm-4pm"
+],
+
+"Lectoescritura Kids y Teens":[
+"📍 Tulum - Sáb 12pm-4pm"
+],
+
+"Computación 6 meses":[
+"📍 Lakin - Sáb 8am-12pm"
+],
+
+"Computación + Inglés":[
+"📍 Lakin - Sáb 4pm-8pm"
+],
+
+"Colorimetría": horariosBeauty,
+"Tratamientos Capilares": horariosBeauty,
+"Maquillaje Profesional": horariosBeauty,
+"Cortes y Barbería": horariosBeauty,
+"Uñas Artísticas": horariosBeauty,
+"Lashista": horariosBeauty,
+"Terapeuta Spa": horariosBeauty
 };
 
 // ACTUALIZAR HORARIOS
@@ -182,7 +209,7 @@ h.innerHTML='<option disabled selected>Selecciona horario</option>';
 
 opciones[c]?.forEach(x=>{
 let o=document.createElement("option");
-o.textContent="📅 "+x;
+o.textContent=x;
 h.appendChild(o);
 });
 }
@@ -207,7 +234,7 @@ if(v.length>=5) e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,2})/,'$1/$2/$3');
 else if(v.length>=3) e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
 });
 
-// GUARDAR + API + WHATSAPP
+// GUARDAR
 async function guardar(){
 
 let data = {
@@ -218,7 +245,6 @@ let data = {
     horario: document.getElementById("horario").value
 };
 
-// VALIDACIÓN
 if(!data.nombre || !data.curso || !data.horario){
     alert("Completa los datos");
     return;
@@ -229,9 +255,7 @@ try {
     await fetch("https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec", {
         method: "POST",
         body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json"
-        }
+        headers: {"Content-Type": "application/json"}
     });
 
     let msg = `Nueva inscripción%0A${data.nombre}%0ACurso: ${data.curso}%0AHorario: ${data.horario}`;
