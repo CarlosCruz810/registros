@@ -11,7 +11,6 @@ body {
     margin:0;
     background: linear-gradient(135deg,#1a5c58,#25d366);
 }
-
 .container {
     max-width:500px;
     margin:auto;
@@ -20,10 +19,8 @@ body {
     padding:20px;
     margin-top:20px;
 }
-
 .step { display:none; }
 .step.active { display:block; }
-
 input, select {
     width:100%;
     padding:14px;
@@ -31,7 +28,6 @@ input, select {
     border-radius:10px;
     border:1px solid #ddd;
 }
-
 button {
     width:100%;
     padding:15px;
@@ -42,14 +38,12 @@ button {
     color:#fff;
     font-weight:bold;
 }
-
 .progress {
     height:6px;
     background:#eee;
     margin-bottom:15px;
     border-radius:10px;
 }
-
 .bar {
     height:100%;
     width:33%;
@@ -136,51 +130,41 @@ const horariosBeauty = [
 ];
 
 const opciones = {
-
 "Primaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
 "📍 Lakin - Mar/Mié 6pm-8pm"
 ],
-
 "Secundaria":[
 "📍 Kabah - Mar/Mié 6pm-8pm",
 "📍 Lakin - Mar/Mié 6pm-8pm"
 ],
-
 "Bachillerato Garantizado":[
 "📍 Tulum - Sáb 4pm-9pm",
 "📍 Lakin - Sáb 4pm-9pm",
 "💻 Online - Sáb 4pm-9pm",
 "📍 Kabah - Dom 8am-1pm"
 ],
-
 "Bachillerato Livier":[
 "📍 Kabah - Lun 7:30am-10am",
 "📍 Lakin - Lun 3pm-5:30pm"
 ],
-
 "Asistente Educativo":[
 "📍 Kabah - Lun/Jue 5:30pm-8:30pm",
 "📍 Kabah - Sáb 7am-1pm"
 ],
-
 "Inglés Kids y Teens":[
 "📍 Kabah - Sáb 1pm-4pm",
 "📍 Lakin - Sáb 1pm-4pm"
 ],
-
 "Lectoescritura Kids y Teens":[
 "📍 Tulum - Sáb 12pm-4pm"
 ],
-
 "Computación 6 meses":[
 "📍 Lakin - Sáb 8am-12pm"
 ],
-
 "Computación + Inglés":[
 "📍 Lakin - Sáb 4pm-8pm"
 ],
-
 "Colorimetría": horariosBeauty,
 "Tratamientos Capilares": horariosBeauty,
 "Maquillaje Profesional": horariosBeauty,
@@ -188,7 +172,6 @@ const opciones = {
 "Uñas Artísticas": horariosBeauty,
 "Lashista": horariosBeauty,
 "Terapeuta Spa": horariosBeauty
-
 };
 
 function actualizarHorarios(){
@@ -233,42 +216,44 @@ parentesco: document.getElementById("parentesco").value,
 ocupacion: document.getElementById("ocupacion").value
 };
 
-await fetch(API,{
-method:"POST",
-body:JSON.stringify(data)
-});
+await fetch(API,{method:"POST",body:JSON.stringify(data)});
 
-// WHATSAPP ADMIN
-let adminMsg = `📥 NUEVA INSCRIPCIÓN
-Curso: ${data.curso}
-Horario: ${data.horario}
+// 🔥 MENSAJE COMPLETO ADMIN
+let plantel = data.horario.includes("Kabah")?"Kabah":data.horario.includes("Lakin")?"Lakin":"Tulum";
 
-Alumno: ${data.nombre}
-Tel: ${data.telefono}`;
+let adminMsg = `📥 *NUEVA INSCRIPCIÓN*
+
+📚 ${data.curso}
+📍 ${plantel}
+⏰ ${data.horario}
+
+👤 ${data.nombre}
+📱 ${data.telefono}
+📧 ${data.correo}
+
+👨‍👩‍👧 Tutor: ${data.tutor}
+📱 ${data.tel_tutor}
+`;
 
 window.open(`https://wa.me/529987593954?text=${encodeURIComponent(adminMsg)}`);
 
-// WHATSAPP CLIENTE
+// CLIENTE
 let clienteMsg = `Hola ${data.nombre} 👋
 
 Tu inscripción fue registrada ✅
 
-💳 FORMAS DE PAGO:
-Santander
+💳 Santander
 Cuenta: 65-50895178-1
 CLABE: 014691655089517814
 
-Tarjeta:
+💳 Tarjeta:
 5579 0890 0527 7178
-
-También puedes pagar en plantel.
 
 Envía tu comprobante 🙌`;
 
 window.open(`https://wa.me/52${data.telefono}?text=${encodeURIComponent(clienteMsg)}`);
 
 alert("Inscripción enviada ✅");
-
 }
 
 </script>
