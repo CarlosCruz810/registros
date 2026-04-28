@@ -60,13 +60,18 @@ button {
 
 <option>Bachillerato Garantizado</option>
 <option>Bachillerato Livier</option>
+
 <option>Primaria</option>
 <option>Secundaria</option>
+
 <option>Asistente Educativo</option>
+
 <option>Inglés Kids y Teens</option>
 <option>Lectoescritura Kids y Teens</option>
+
 <option>Computación 6 meses</option>
 <option>Computación + Inglés</option>
+
 <option>Colorimetría</option>
 <option>Tratamientos Capilares</option>
 <option>Maquillaje Profesional</option>
@@ -113,6 +118,9 @@ button {
 
 <script>
 
+// API
+const API = "https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec";
+
 // FORMATO FECHA
 document.getElementById('fecha').addEventListener('input', e=>{
 let v=e.target.value.replace(/\D/g,'').slice(0,8);
@@ -133,53 +141,52 @@ const horariosBeauty = [
 "📍 Lakin - Sábado 2:00 pm - 8:00 pm"
 ];
 
-// TODOS LOS HORARIOS
+// HORARIOS (CORREGIDO)
 const opciones = {
 
 "Bachillerato Garantizado":[
-"📍 Tulum - Sáb 16 Mayo 4:00 pm - 9:00 pm",
-"📍 Lakin - Sáb 16 Mayo 4:00 pm - 9:00 pm",
-"💻 Online - Sáb 16 Mayo 4:00 pm - 9:00 pm",
-"📍 Kabah - Dom 17 Mayo 8:00 am - 1:00 pm"
+"📍 Tulum - Sáb 4pm-9pm",
+"📍 Lakin - Sáb 4pm-9pm",
+"💻 Online - Sáb 4pm-9pm",
+"📍 Kabah - Dom 8am-1pm"
 ],
 
 "Bachillerato Livier":[
-"📍 Kabah - Lun 18 Mayo 7:30 am - 10:00 am",
-"📍 Lakin - Lun 18 Mayo 3:00 pm - 5:30 pm"
+"📍 Kabah - Lun 7:30am-10am",
+"📍 Lakin - Lun 3pm-5:30pm"
 ],
 
 "Primaria":[
-"📍 Kabah - Mar/Mié 6:00 pm - 8:00 pm",
-"📍 Lakin - Mar/Mié 6:00 pm - 8:00 pm",
-"📍 Kabah - Dom 9:00 am - 1:00 pm",
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Kabah - Domingo 9am-1pm",
+"📍 Lakin - Mar/Mié 6pm-8pm"
 ],
 
 "Secundaria":[
-"📍 Kabah - Mar/Mié 6:00 pm - 8:00 pm",
-"📍 Lakin - Mar/Mié 6:00 pm - 8:00 pm",
-"📍 Kabah - Dom 9:00 am - 1:00 pm",
+"📍 Kabah - Mar/Mié 6pm-8pm",
+"📍 Kabah - Domingo 9am-1pm",
+"📍 Lakin - Mar/Mié 6pm-8pm"
 ],
 
 "Asistente Educativo":[
-"📍 Kabah - Lun/Jue 5:30 pm - 8:30 pm",
-"📍 Kabah - Sáb 7:00 am - 1:00 pm"
+"📍 Kabah - Lun/Jue 5:30pm-8:30pm"
 ],
 
 "Inglés Kids y Teens":[
-"📍 Kabah - Sáb 1:00 pm - 4:00 pm",
-"📍 Lakin - Sáb 1:00 pm - 4:00 pm"
+"📍 Kabah - Sáb 1pm-4pm",
+"📍 Lakin - Sáb 1pm-4pm"
 ],
 
 "Lectoescritura Kids y Teens":[
-"📍 Tulum - Sáb 12:00 pm - 4:00 pm"
+"📍 Tulum - Sáb 12pm-4pm"
 ],
 
 "Computación 6 meses":[
-"📍 Lakin - Sáb 8:00 am - 12:00 pm"
+"📍 Lakin - Sáb 8am-12pm"
 ],
 
 "Computación + Inglés":[
-"📍 Lakin - Sáb 4:00 pm - 8:00 pm"
+"📍 Lakin - Sáb 4pm-8pm"
 ],
 
 "Colorimetría": horariosBeauty,
@@ -189,7 +196,26 @@ const opciones = {
 "Uñas Artísticas": horariosBeauty,
 "Lashista": horariosBeauty,
 "Terapeuta Spa": horariosBeauty
+};
 
+// DURACIONES
+const duraciones = {
+"Bachillerato Garantizado":"22 semanas",
+"Bachillerato Livier":"2 años",
+"Primaria":"6 meses",
+"Secundaria":"6 meses",
+"Asistente Educativo":"18 meses",
+"Terapeuta Spa":"18 meses",
+"Inglés Kids y Teens":"7 meses",
+"Lectoescritura Kids y Teens":"7 meses",
+"Computación + Inglés":"12 meses",
+"Computación 6 meses":"12 meses",
+"Cortes y Barbería":"6 meses",
+"Lashista":"4 meses",
+"Maquillaje Profesional":"4 meses",
+"Colorimetría":"4 meses",
+"Tratamientos Capilares":"4 meses",
+"Uñas Artísticas":"4 meses"
 };
 
 // ACTUALIZAR HORARIOS
@@ -221,8 +247,61 @@ steps[step].classList.add("active");
 function next(){ if(step<2) step++; show(); }
 function prev(){ if(step>0) step--; show(); }
 
+// ENVIAR
 function guardar(){
-alert("Formulario funcionando correctamente ✅");
+
+let curso=document.getElementById("curso").value;
+let horario=document.getElementById("horario").value;
+
+let data={
+curso,
+horario,
+duracion:duraciones[curso],
+nombre:document.getElementById("nombre").value,
+nacionalidad:document.getElementById("nacionalidad").value,
+fecha:document.getElementById("fecha").value,
+edad:document.getElementById("edad").value,
+telefono:document.getElementById("telefono").value,
+correo:document.getElementById("correo").value,
+domicilio:document.getElementById("domicilio").value,
+estudios:document.getElementById("estudios").value,
+tutor:document.getElementById("tutor").value,
+tel_tutor:document.getElementById("tel_tutor").value,
+parentesco:document.getElementById("parentesco").value,
+ocupacion:document.getElementById("ocupacion").value
+};
+
+if(!curso || !horario){
+alert("Selecciona curso y horario");
+return;
+}
+
+// WHATSAPP ADMIN
+let msg=`*1. PROGRAMA*
+*Curso:* ${curso}
+*Horario:* ${horario}
+*Duración:* ${data.duracion}
+
+*2. DATOS DEL ALUMNO*
+*Nombre:* ${data.nombre}
+*Nacionalidad:* ${data.nacionalidad}
+*Fecha Nac:* ${data.fecha}
+*Edad:* ${data.edad}
+*Teléfono:* ${data.telefono}
+*Correo:* ${data.correo}
+*Domicilio:* ${data.domicilio}
+*Estudios:* ${data.estudios}
+
+*3. TUTOR / EMERGENCIA*
+*Nombre:* ${data.tutor}
+*Teléfono:* ${data.tel_tutor}
+*Parentesco:* ${data.parentesco}
+*Ocupación:* ${data.ocupacion}`;
+
+window.open(`https://wa.me/529987593954?text=${encodeURIComponent(msg)}`, '_blank');
+
+alert("Inscripción enviada correctamente ✅");
+
 }
 
 </script>
