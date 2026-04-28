@@ -49,7 +49,6 @@ button {
 <body>
 
 <div class="container">
-
 <h2>Inscripción</h2>
 
 <!-- PASO 1 -->
@@ -118,9 +117,6 @@ button {
 
 <script>
 
-// API
-const API = "https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec";
-
 // FORMATO FECHA
 document.getElementById('fecha').addEventListener('input', e=>{
 let v=e.target.value.replace(/\D/g,'').slice(0,8);
@@ -130,75 +126,66 @@ else if(v.length>=3)
 e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
 });
 
-// HORARIOS BEAUTY
-const horariosBeauty = [
-"📍 Lakin - Lunes 8:00 am - 2:00 pm",
-"📍 Lakin - Martes 8:00 am - 2:00 pm",
-"📍 Lakin - Miércoles 8:00 am - 2:00 pm",
-"📍 Lakin - Jueves 2:00 pm - 8:00 pm",
-"📍 Lakin - Viernes 2:00 pm - 8:00 pm",
-"📍 Lakin - Sábado 8:00 am - 2:00 pm",
-"📍 Lakin - Sábado 2:00 pm - 8:00 pm"
-];
-
-// HORARIOS (CORREGIDO)
+// HORARIOS COMPLETOS CON FECHAS Y COSTOS
 const opciones = {
 
 "Bachillerato Garantizado":[
-"📍 Tulum - Sáb 4pm-9pm",
-"📍 Lakin - Sáb 4pm-9pm",
-"💻 Online - Sáb 4pm-9pm",
-"📍 Kabah - Dom 8am-1pm"
+"Sáb 18 Abril 2026 - Tulum - 4pm-9pm - $360/$450",
+"Sáb 16 Mayo 2026 - Lakin - 4pm-9pm - $360/$450",
+"Dom 17 Mayo 2026 - Kabah - 8am-1pm - $360/$450",
+"Online 18 Abril / 16 Mayo - 4pm-9pm - $360/$450"
 ],
 
 "Bachillerato Livier":[
-"📍 Kabah - Lun 7:30am-10am",
-"📍 Lakin - Lun 3pm-5:30pm"
+"Lun 20 Abril 2026 - Kabah - 7:30am-10am - $350/$400",
+"Lun 20 Abril 2026 - Lakin - 3pm-5:30pm - $350/$400"
 ],
 
 "Primaria":[
-"📍 Kabah - Mar/Mié 6pm-8pm",
-"📍 Kabah - Domingo 9am-1pm",
-"📍 Lakin - Mar/Mié 6pm-8pm"
+"Mar/Mié 21 Abril 2026 - Kabah - 6pm-8pm - $250/$300",
+"Dom 3 Mayo 2026 - Kabah - 9am-1pm - $250/$300",
+"Mar/Mié 21 Abril 2026 - Lakin - 6pm-8pm - $250/$300"
 ],
 
 "Secundaria":[
-"📍 Kabah - Mar/Mié 6pm-8pm",
-"📍 Kabah - Domingo 9am-1pm",
-"📍 Lakin - Mar/Mié 6pm-8pm"
+"Mar/Mié 21 Abril 2026 - Kabah - 6pm-8pm - $250/$300",
+"Dom 3 Mayo 2026 - Kabah - 9am-1pm - $250/$300",
+"Mar/Mié 21 Abril 2026 - Lakin - 6pm-8pm - $250/$300"
 ],
 
 "Asistente Educativo":[
-"📍 Kabah - Lun/Jue 5:30pm-8:30pm"
+"Lun/Jue 30 Marzo 2026 - Kabah - 5:30pm-8:30pm - $280/$330",
+"Sáb 11 Abril 2026 - Kabah - 7am-1pm - $280/$330"
 ],
 
 "Inglés Kids y Teens":[
-"📍 Kabah - Sáb 1pm-4pm",
-"📍 Lakin - Sáb 1pm-4pm"
+"Sáb 25 Abril 2026 - Kabah - 1pm-4pm - $150/$200",
+"Sáb 25 Abril 2026 - Lakin - 1pm-4pm - $150/$200"
 ],
 
 "Lectoescritura Kids y Teens":[
-"📍 Tulum - Sáb 12pm-4pm"
+"Sáb 25 Abril 2026 - Tulum - 12pm-4pm - $200/$250"
 ],
 
 "Computación 6 meses":[
-"📍 Lakin - Sáb 8am-12pm"
+"Sáb 14 Marzo 2026 - Lakin - 8am-12pm - $200/$250"
 ],
 
 "Computación + Inglés":[
-"📍 Lakin - Sáb 4pm-8pm"
+"Sáb 18 Abril 2026 - Lakin - 4pm-8pm - $200/$250"
 ],
 
-"Colorimetría": horariosBeauty,
-"Tratamientos Capilares": horariosBeauty,
-"Maquillaje Profesional": horariosBeauty,
-"Cortes y Barbería": horariosBeauty,
-"Uñas Artísticas": horariosBeauty,
-"Lashista": horariosBeauty,
-"Terapeuta Spa": horariosBeauty
+// BEAUTY
+"Colorimetría":["Lakin - Lunes a Sábado - $250/$550"],
+"Tratamientos Capilares":["Lakin - Lunes a Sábado - $250/$550"],
+"Maquillaje Profesional":["Lakin - Lunes a Sábado - $250/$550"],
+"Cortes y Barbería":["Lakin - Lunes a Sábado - $250/$550"],
+"Uñas Artísticas":["Lakin - Lunes a Sábado - $250/$550"],
+"Lashista":["Lakin - Lunes a Sábado - $250/$550"],
+"Terapeuta Spa":["Lakin - Lunes a Sábado - $250/$550"]
 };
 
-// DURACIONES
+// DURACIÓN
 const duraciones = {
 "Bachillerato Garantizado":"22 semanas",
 "Bachillerato Livier":"2 años",
@@ -225,14 +212,12 @@ let h=document.getElementById("horario");
 
 h.innerHTML='<option disabled selected>Selecciona horario</option>';
 
-if(opciones[c]){
-opciones[c].forEach(x=>{
+opciones[c]?.forEach(x=>{
 let o=document.createElement("option");
 o.value=x;
 o.textContent=x;
 h.appendChild(o);
 });
-}
 }
 
 // STEPS
@@ -253,58 +238,37 @@ function guardar(){
 let curso=document.getElementById("curso").value;
 let horario=document.getElementById("horario").value;
 
-let data={
-curso,
-horario,
-duracion:duraciones[curso],
-nombre:document.getElementById("nombre").value,
-nacionalidad:document.getElementById("nacionalidad").value,
-fecha:document.getElementById("fecha").value,
-edad:document.getElementById("edad").value,
-telefono:document.getElementById("telefono").value,
-correo:document.getElementById("correo").value,
-domicilio:document.getElementById("domicilio").value,
-estudios:document.getElementById("estudios").value,
-tutor:document.getElementById("tutor").value,
-tel_tutor:document.getElementById("tel_tutor").value,
-parentesco:document.getElementById("parentesco").value,
-ocupacion:document.getElementById("ocupacion").value
-};
-
-if(!curso || !horario){
-alert("Selecciona curso y horario");
-return;
-}
-
-// WHATSAPP ADMIN
 let msg=`*1. PROGRAMA*
 *Curso:* ${curso}
 *Horario:* ${horario}
-*Duración:* ${data.duracion}
+*Duración:* ${duraciones[curso]}
+*Inscripción:* $800
 
 *2. DATOS DEL ALUMNO*
-*Nombre:* ${data.nombre}
-*Nacionalidad:* ${data.nacionalidad}
-*Fecha Nac:* ${data.fecha}
-*Edad:* ${data.edad}
-*Teléfono:* ${data.telefono}
-*Correo:* ${data.correo}
-*Domicilio:* ${data.domicilio}
-*Estudios:* ${data.estudios}
+*Nombre:* ${nombre.value}
+*Nacionalidad:* ${nacionalidad.value}
+*Fecha Nac:* ${fecha.value}
+*Edad:* ${edad.value}
+*Teléfono:* ${telefono.value}
+*Correo:* ${correo.value}
+*Domicilio:* ${domicilio.value}
+*Estudios:* ${estudios.value}
 
 *3. TUTOR / EMERGENCIA*
-*Nombre:* ${data.tutor}
-*Teléfono:* ${data.tel_tutor}
-*Parentesco:* ${data.parentesco}
-*Ocupación:* ${data.ocupacion}`;
+*Nombre:* ${tutor.value}
+*Teléfono:* ${tel_tutor.value}
+*Parentesco:* ${parentesco.value}
+*Ocupación:* ${ocupacion.value}`;
 
-window.open(`https://wa.me/529987593954?text=${encodeURIComponent(msg)}`, '_blank');
+window.open(`https://wa.me/529987593954?text=${encodeURIComponent(msg)}`);
 
 alert("Inscripción enviada correctamente ✅");
-
 }
 
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
