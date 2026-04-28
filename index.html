@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inscripción Livier</title>
+
+<title>Inscripción Instituto Livier</title>
 
 <style>
 body {
@@ -19,15 +20,20 @@ body {
     padding:20px;
     margin-top:20px;
 }
-.step{display:none;}
-.step.active{display:block;}
-input,select{
+h2 { text-align:center; }
+
+.step { display:none; }
+.step.active { display:block; }
+
+input, select {
     width:100%;
     padding:14px;
     margin-top:10px;
     border-radius:10px;
+    border:1px solid #ddd;
 }
-button{
+
+button {
     width:100%;
     padding:15px;
     margin-top:15px;
@@ -36,6 +42,7 @@ button{
     background:#25d366;
     color:#fff;
     font-weight:bold;
+    cursor:pointer;
 }
 </style>
 </head>
@@ -46,13 +53,28 @@ button{
 
 <h2>Inscripción</h2>
 
+<!-- PASO 1 -->
 <div class="step active">
 
 <select id="curso" onchange="actualizarHorarios()">
 <option disabled selected>Selecciona curso</option>
-<option>Maquillaje Profesional y Alto Peinado</option>
+
+<option>Bachillerato Garantizado</option>
+<option>Bachillerato Livier</option>
 <option>Primaria</option>
 <option>Secundaria</option>
+<option>Asistente Educativo</option>
+<option>Inglés Kids y Teens</option>
+<option>Lectoescritura Kids y Teens</option>
+<option>Computación 6 meses</option>
+<option>Computación + Inglés</option>
+<option>Colorimetría</option>
+<option>Tratamientos Capilares</option>
+<option>Maquillaje Profesional</option>
+<option>Cortes y Barbería</option>
+<option>Uñas Artísticas</option>
+<option>Lashista</option>
+<option>Terapeuta Spa</option>
 </select>
 
 <select id="horario"></select>
@@ -60,6 +82,7 @@ button{
 <button onclick="next()">Continuar</button>
 </div>
 
+<!-- PASO 2 -->
 <div class="step">
 <input id="nombre" placeholder="Nombre completo">
 <input id="nacionalidad" placeholder="Nacionalidad">
@@ -68,12 +91,13 @@ button{
 <input id="telefono" placeholder="Teléfono">
 <input id="correo" placeholder="Correo">
 <input id="domicilio" placeholder="Domicilio">
-<input id="estudios" placeholder="Estudios">
+<input id="estudios" placeholder="Último grado">
 
 <button onclick="prev()">Atrás</button>
 <button onclick="next()">Continuar</button>
 </div>
 
+<!-- PASO 3 -->
 <div class="step">
 <input id="tutor" placeholder="Nombre tutor">
 <input id="tel_tutor" placeholder="Tel tutor">
@@ -90,19 +114,54 @@ button{
 
 const API = "https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec";
 
+// HORARIOS
+const horariosBeauty = [
+"📍 Lakin - Lunes 8am-2pm",
+"📍 Lakin - Martes 8am-2pm",
+"📍 Lakin - Miércoles 8am-2pm",
+"📍 Lakin - Jueves 2pm-8pm",
+"📍 Lakin - Viernes 2pm-8pm",
+"📍 Lakin - Sábado 8am-2pm",
+"📍 Lakin - Sábado 2pm-8pm"
+];
+
 const opciones = {
-"Maquillaje Profesional y Alto Peinado":[
-"Lakin - Lunes 8:00 am - 2:00 pm",
-"Kabah - Martes 8:00 am - 2:00 pm"
-],
-"Primaria":[
-"Kabah - Mar/Mié 6pm-8pm",
-"Lakin - Mar/Mié 6pm-8pm"
-],
-"Secundaria":[
-"Kabah - Mar/Mié 6pm-8pm",
-"Lakin - Mar/Mié 6pm-8pm"
-]
+"Bachillerato Garantizado":["📍 Lakin - Sábado"],
+"Bachillerato Livier":["📍 Lakin - Lunes"],
+"Primaria":["📍 Kabah - Mar/Mié","📍 Lakin - Mar/Mié"],
+"Secundaria":["📍 Kabah - Mar/Mié","📍 Lakin - Mar/Mié"],
+"Asistente Educativo":["📍 Kabah - Lun/Jue"],
+"Inglés Kids y Teens":["📍 Kabah - Sábado"],
+"Lectoescritura Kids y Teens":["📍 Tulum - Sábado"],
+"Computación 6 meses":["📍 Lakin - Sábado"],
+"Computación + Inglés":["📍 Lakin - Sábado"],
+"Colorimetría":horariosBeauty,
+"Tratamientos Capilares":horariosBeauty,
+"Maquillaje Profesional":horariosBeauty,
+"Cortes y Barbería":horariosBeauty,
+"Uñas Artísticas":horariosBeauty,
+"Lashista":horariosBeauty,
+"Terapeuta Spa":horariosBeauty
+};
+
+// DURACIÓN
+const duraciones = {
+"Bachillerato Garantizado":"22 semanas",
+"Bachillerato Livier":"2 años",
+"Primaria":"6 meses",
+"Secundaria":"6 meses",
+"Asistente Educativo":"18 meses",
+"Terapeuta Spa":"18 meses",
+"Inglés Kids y Teens":"7 meses",
+"Lectoescritura Kids y Teens":"7 meses",
+"Computación + Inglés":"12 meses",
+"Computación 6 meses":"12 meses",
+"Cortes y Barbería":"6 meses",
+"Lashista":"4 meses",
+"Maquillaje Profesional":"4 meses",
+"Colorimetría":"4 meses",
+"Tratamientos Capilares":"4 meses",
+"Uñas Artísticas":"4 meses"
 };
 
 function actualizarHorarios(){
@@ -116,6 +175,7 @@ h.appendChild(o);
 });
 }
 
+// STEPS
 let step=0;
 const steps=document.querySelectorAll(".step");
 
@@ -123,47 +183,49 @@ function show(){
 steps.forEach(s=>s.classList.remove("active"));
 steps[step].classList.add("active");
 }
-
 function next(){ if(step<2) step++; show(); }
 function prev(){ if(step>0) step--; show(); }
 
+// GUARDAR
 async function guardar(){
 
-let btn = event.target;
-btn.disabled = true;
-btn.innerText = "Enviando...";
+let btn=event.target;
+btn.disabled=true;
+btn.innerText="Enviando...";
 
-let data = {
-nombre: document.getElementById("nombre").value,
-nacionalidad: document.getElementById("nacionalidad").value,
-fecha: document.getElementById("fecha").value,
-edad: document.getElementById("edad").value,
-telefono: document.getElementById("telefono").value,
-correo: document.getElementById("correo").value,
-domicilio: document.getElementById("domicilio").value,
-estudios: document.getElementById("estudios").value,
-curso: document.getElementById("curso").value,
-horario: document.getElementById("horario").value,
-tutor: document.getElementById("tutor").value,
-tel_tutor: document.getElementById("tel_tutor").value,
-parentesco: document.getElementById("parentesco").value,
-ocupacion: document.getElementById("ocupacion").value
+let curso=document.getElementById("curso").value;
+let horario=document.getElementById("horario").value;
+
+let data={
+nombre:document.getElementById("nombre").value,
+nacionalidad:document.getElementById("nacionalidad").value,
+fecha:document.getElementById("fecha").value,
+edad:document.getElementById("edad").value,
+telefono:document.getElementById("telefono").value,
+correo:document.getElementById("correo").value,
+domicilio:document.getElementById("domicilio").value,
+estudios:document.getElementById("estudios").value,
+curso:curso,
+horario:horario,
+dia:horario,
+duracion:duraciones[curso],
+tutor:document.getElementById("tutor").value,
+tel_tutor:document.getElementById("tel_tutor").value,
+parentesco:document.getElementById("parentesco").value,
+ocupacion:document.getElementById("ocupacion").value
 };
 
-try {
+try{
 
-let res = await fetch(API,{
-method:"POST",
-body:JSON.stringify(data)
-});
+let res=await fetch(API,{method:"POST",body:JSON.stringify(data)});
+let r=await res.json();
 
-let r = await res.json();
+if(r.status!=="ok") throw "error";
 
-if(r.status !== "ok") throw "Error servidor";
-
-let msgAdmin = `*1. PROGRAMA*
-Curso: ${data.curso}
-Horario: ${data.horario}
+// WHATSAPP ADMIN
+let msg=`*1. PROGRAMA*
+Curso: ${curso}
+Horario: ${horario}
 
 *2. DATOS DEL ALUMNO*
 Nombre: ${data.nombre}
@@ -175,36 +237,41 @@ Correo: ${data.correo}
 Domicilio: ${data.domicilio}
 Estudios: ${data.estudios}
 
-*3. TUTOR*
+*3. TUTOR / EMERGENCIA*
 Nombre: ${data.tutor}
 Teléfono: ${data.tel_tutor}
 Parentesco: ${data.parentesco}
 Ocupación: ${data.ocupacion}`;
 
-window.open(`https://wa.me/529987593954?text=${encodeURIComponent(msgAdmin)}`);
+window.open(`https://wa.me/529987593954?text=${encodeURIComponent(msg)}`);
 
-let msgAlumno = `Hola ${data.nombre}, tu inscripción fue recibida ✅
+// WHATSAPP ALUMNO
+let msgAlumno=`Hola ${data.nombre} 👋
 
-Realiza tu pago:
+Tu inscripción fue registrada correctamente ✅
 
-Tarjeta:
+Puedes realizar tu pago por:
+
+💳 Tarjeta
 5579 0890 0527 7178
 
-Transferencia:
+🏦 Transferencia
 Instituto Livier S.C
 Cuenta: 65-50895178-1
 CLABE: 014691655089517814
 
-También puedes pagar en caja.`;
+💵 O en efectivo en cualquiera de nuestros planteles.
+
+Envíanos tu comprobante para confirmar tu lugar.`;
 
 window.open(`https://wa.me/52${data.telefono}?text=${encodeURIComponent(msgAlumno)}`);
 
 alert("Inscripción enviada correctamente");
 
-} catch(e){
+}catch(e){
 alert("Error al enviar");
-btn.disabled = false;
-btn.innerText = "Enviar";
+btn.disabled=false;
+btn.innerText="Enviar";
 }
 
 }
