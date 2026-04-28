@@ -74,7 +74,6 @@ button {
 <option>Uñas Artísticas</option>
 <option>Lashista</option>
 <option>Terapeuta Spa</option>
-
 </select>
 
 <select id="horario">
@@ -88,13 +87,8 @@ button {
 <div class="step">
 <input id="nombre" placeholder="Nombre completo">
 <input id="nacionalidad" placeholder="Nacionalidad">
-
-<!-- FECHA MANUAL -->
 <input id="fecha" placeholder="DD/MM/AAAA">
-
-<!-- EDAD NUMÉRICA -->
 <input id="edad" type="number" placeholder="Edad">
-
 <input id="telefono" placeholder="Teléfono">
 <input id="correo" placeholder="Correo">
 <input id="domicilio" placeholder="Domicilio">
@@ -119,19 +113,16 @@ button {
 
 <script>
 
-const API = "https://script.google.com/macros/s/AKfycbwP7JCcv2kYOVUou2thdzmdXNBOtMGbp03av722obtKzv3K7D5zttxhuJmxqAW0Sh5t_g/exec";
-
-// FORMATO AUTOMÁTICO DD/MM/AAAA
+// FORMATO FECHA
 document.getElementById('fecha').addEventListener('input', e=>{
 let v=e.target.value.replace(/\D/g,'').slice(0,8);
-
 if(v.length>=5)
 e.target.value=v.replace(/(\d{2})(\d{2})(\d{1,4})/,'$1/$2/$3');
 else if(v.length>=3)
 e.target.value=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');
 });
 
-// HORARIOS
+// HORARIOS BEAUTY
 const horariosBeauty = [
 "📍 Lakin - Lunes 8:00 am - 2:00 pm",
 "📍 Lakin - Martes 8:00 am - 2:00 pm",
@@ -142,11 +133,65 @@ const horariosBeauty = [
 "📍 Lakin - Sábado 2:00 pm - 8:00 pm"
 ];
 
+// TODOS LOS HORARIOS
 const opciones = {
-"Primaria":["📍 Kabah - Mar/Mié","📍 Lakin - Mar/Mié"],
-"Secundaria":["📍 Kabah - Mar/Mié","📍 Lakin - Mar/Mié"],
-"Colorimetría":horariosBeauty,
-"Cortes y Barbería":horariosBeauty
+
+"Bachillerato Garantizado":[
+"📍 Tulum - Sáb 16 Mayo 4:00 pm - 9:00 pm",
+"📍 Lakin - Sáb 16 Mayo 4:00 pm - 9:00 pm",
+"💻 Online - Sáb 16 Mayo 4:00 pm - 9:00 pm",
+"📍 Kabah - Dom 17 Mayo 8:00 am - 1:00 pm"
+],
+
+"Bachillerato Livier":[
+"📍 Kabah - Lun 18 Mayo 7:30 am - 10:00 am",
+"📍 Lakin - Lun 18 Mayo 3:00 pm - 5:30 pm"
+],
+
+"Primaria":[
+"📍 Kabah - Mar/Mié 6:00 pm - 8:00 pm",
+"📍 Lakin - Mar/Mié 6:00 pm - 8:00 pm",
+"📍 Kabah - Dom 9:00 am - 1:00 pm",
+"📍 Lakin - Dom 9:00 am - 1:00 pm"
+],
+
+"Secundaria":[
+"📍 Kabah - Mar/Mié 6:00 pm - 8:00 pm",
+"📍 Lakin - Mar/Mié 6:00 pm - 8:00 pm",
+"📍 Kabah - Dom 9:00 am - 1:00 pm",
+"📍 Lakin - Dom 9:00 am - 1:00 pm"
+],
+
+"Asistente Educativo":[
+"📍 Kabah - Lun/Jue 5:30 pm - 8:30 pm",
+"📍 Kabah - Sáb 7:00 am - 1:00 pm"
+],
+
+"Inglés Kids y Teens":[
+"📍 Kabah - Sáb 1:00 pm - 4:00 pm",
+"📍 Lakin - Sáb 1:00 pm - 4:00 pm"
+],
+
+"Lectoescritura Kids y Teens":[
+"📍 Tulum - Sáb 12:00 pm - 4:00 pm"
+],
+
+"Computación 6 meses":[
+"📍 Lakin - Sáb 8:00 am - 12:00 pm"
+],
+
+"Computación + Inglés":[
+"📍 Lakin - Sáb 4:00 pm - 8:00 pm"
+],
+
+"Colorimetría": horariosBeauty,
+"Tratamientos Capilares": horariosBeauty,
+"Maquillaje Profesional": horariosBeauty,
+"Cortes y Barbería": horariosBeauty,
+"Uñas Artísticas": horariosBeauty,
+"Lashista": horariosBeauty,
+"Terapeuta Spa": horariosBeauty
+
 };
 
 // ACTUALIZAR HORARIOS
@@ -156,12 +201,14 @@ let h=document.getElementById("horario");
 
 h.innerHTML='<option disabled selected>Selecciona horario</option>';
 
-opciones[c]?.forEach(x=>{
+if(opciones[c]){
+opciones[c].forEach(x=>{
 let o=document.createElement("option");
 o.value=x;
 o.textContent=x;
 h.appendChild(o);
 });
+}
 }
 
 // STEPS
@@ -172,24 +219,15 @@ function show(){
 steps.forEach(s=>s.classList.remove("active"));
 steps[step].classList.add("active");
 }
+
 function next(){ if(step<2) step++; show(); }
 function prev(){ if(step>0) step--; show(); }
 
-// GUARDAR
-async function guardar(){
-
-let data={
-nombre:document.getElementById("nombre").value,
-fecha:document.getElementById("fecha").value
-};
-
-alert("Formato correcto aplicado ✅");
-
+function guardar(){
+alert("Formulario funcionando correctamente ✅");
 }
 
 </script>
 
-</body>
-</html>
 </body>
 </html>
